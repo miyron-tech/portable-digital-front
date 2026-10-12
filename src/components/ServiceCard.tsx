@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { categoryLabel, formatMoney } from '@/lib/format';
+import { categoryLabel, startingPrice } from '@/lib/format';
 import type { Service } from '@/lib/types';
 import { ServiceIllustration } from './ServiceIllustration';
 import { ServiceReveal } from './ServiceReveal';
@@ -10,7 +10,7 @@ export function ServiceCard({ service, index = 0 }: { service: Service; index?: 
     <div className="practice-caption"><span>FIG {String(index + 1).padStart(2, '0')}</span><span>{categoryLabel(service.category)}</span></div>
     <div className="practice-art"><ServiceIllustration category={service.category} slug={service.slug} /></div>
     <div className="practice-copy"><h3>{service.title}</h3><p>{service.summary}</p></div>
-    <div className="practice-meta"><span>{service.priceFrom > 0 ? `From ${formatMoney(service.priceFrom, service.currency)}` : 'On request'}</span>{service.deliveryTime && <span>{service.deliveryTime}</span>}</div>
+    <div className="practice-meta"><span>{service.priceFrom > 0 ? startingPrice(service) : 'On request'}</span>{service.deliveryTime && <span>{service.deliveryTime}</span>}</div>
     <span className="practice-link">Explore service</span>
   </Link>;
 }

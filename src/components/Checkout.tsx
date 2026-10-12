@@ -5,7 +5,7 @@ import { DataNotice } from './DataNotice';
 import { PayButton } from './PayButton';
 import { StoreAuth } from './StoreAuth';
 import { storeApi, type StoreUser, type StoreOrder } from '@/lib/store-client';
-import { formatMoney, ratePrice, rateTitle } from '@/lib/format';
+import { formatMoney, rateNotes, ratePrice, rateTitle } from '@/lib/format';
 import { LEGAL_VERSION } from '@/lib/legal';
 import type { Service } from '@/lib/types';
 
@@ -47,6 +47,8 @@ export function Checkout({ service }: { service: Service }) {
             {service.pricing.map((r, i) => <option value={i} key={i}>{rateTitle(r)} · {ratePrice(r, service.currency)}</option>)}
           </select></label>
           <label>{rate.model === 'hourly' || rate.model === 'mixed' ? 'Number of hours' : rate.model === 'retainer' ? 'Number of periods' : 'Number of projects'}<input type="number" min={rate.minUnits || 1} max={rate.maxUnits || undefined} value={units} onChange={e => { setUnits(Number(e.target.value)); setQuote(null); }} /></label>
+          {/* Условия тарифа рядом с количеством: ставка, минимальный заказ суммой, округление неполного часа. */}
+          {rateNotes(rate, service.currency).length > 0 && <ul className="store-muted text-sm">{[ratePrice(rate, service.currency), ...rateNotes(rate, service.currency)].map(note => <li key={note}>{note}</li>)}</ul>}
           {rate.milestones.map(m => <label className="store-check" key={m.key}><input type="checkbox" checked={m.required || milestones.includes(m.key)} disabled={m.required} onChange={e => { setMilestones(e.target.checked ? [...milestones, m.key] : milestones.filter(key => key !== m.key)); setQuote(null); }} />{m.title} · {formatMoney(m.amount, service.currency)}{m.required ? ' (included)' : ''}</label>)}
           <p className="store-muted">Calculated using the current service rates.</p><strong className="store-total">{quote ? formatMoney(quote.total, quote.currency) : 'Calculating…'}</strong>
         </section>}

@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { Container } from '@/components/Container';
 import { LeadForm } from '@/components/LeadForm';
 import { getService } from '@/lib/api';
-import { categoryLabel, formatMoney, rateNotes, ratePrice, rateTitle } from '@/lib/format';
+import { categoryLabel, formatMoney, rateNotes, ratePrice, rateTitle, startingPrice } from '@/lib/format';
 import type { Service, ServiceRate } from '@/lib/types';
 
 export async function generateMetadata({ params }: PageProps<'/services/[slug]'>): Promise<Metadata> {
@@ -50,7 +50,7 @@ async function ServiceDetails({ params }: { params: PageProps<'/services/[slug]'
           {service.priceFrom > 0 ? (
             <div>
               <dt className="text-muted">Starting at</dt>
-              <dd className="mt-1 text-xl font-semibold">{formatMoney(service.priceFrom, service.currency)}</dd>
+              <dd className="mt-1 text-xl font-semibold">{startingPrice(service).replace(/^From /, '')}</dd>
             </div>
           ) : null}
           {service.deliveryTime ? (
@@ -169,6 +169,18 @@ function jsonLd(service: Service) {
             '@type': 'Offer',
             price: (service.priceFrom / 100).toFixed(2),
             priceCurrency: service.currency,
+            // Почасовая цена — цена за единицу, а не за всю работу.
+            ...(startingPrice(service).endsWith('/ hour')
+              ? {
+                  priceSpecification: {
+                    '@type': 'UnitPriceSpecification',
+                    price: (service.priceFrom / 100).toFixed(2),
+                    priceCurrency: service.currency,
+                    unitCode: 'HUR',
+                    unitText: 'hour',
+                  },
+                }
+              : {}),
           },
         }
       : {}),

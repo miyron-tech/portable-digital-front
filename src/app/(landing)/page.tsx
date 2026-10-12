@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Vantage } from './Vantage';
 import { Suspense } from 'react';
+import { connection } from 'next/server';
 import Link from 'next/link';
 import { getFeaturedServices } from '@/lib/api';
 import { ServiceGrid, ServiceGridSkeleton } from '@/components/ServiceCard';
@@ -42,6 +43,9 @@ export default function LandingPage() {
 }
 
 async function Featured() {
+  // Каталог только по запросу: иначе пререндер главной ходил в API, и сборка
+  // падала без живого бэкенда — в CI его нет.
+  await connection();
   const services = await getFeaturedServices().catch(() => null);
   if (!services) return <div className="store-panel"><p>The catalogue is temporarily unavailable.</p><Link href="/services" className="store-link">View catalogue →</Link></div>;
   if (!services.length) return <div className="store-panel">New services are on the way. <Link href="/contact">Discuss your project →</Link></div>;

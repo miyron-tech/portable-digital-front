@@ -15,7 +15,7 @@ const REEL = [
     src: 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260808_064556_051587f1-74a1-4336-8c05-4dde3594ed05.mp4',
     poster: '/videos/vantage.jpg',
   },
-  { src: '/videos/robot-walk.mp4', poster: '/videos/robot-walk.jpg' },
+  { src: '/videos/rocket-launch.mp4', poster: '/videos/rocket-launch.jpg' },
   { src: '/videos/robot-portrait.mp4', poster: '/videos/robot-portrait.jpg' },
   { src: '/videos/robot-arm.mp4', poster: '/videos/robot-arm.jpg' },
 ];
@@ -163,7 +163,15 @@ export function Vantage() {
               <br />
               without the noise, the drama or the surprises.
             </p>
-            <button type="button" className="primary-cta" onClick={goToContact}>
+            <button
+              type="button"
+              className="primary-cta"
+              onClick={goToContact}
+              // Кнопка появляется последней — по концу её анимации вступление окончено.
+              onAnimationEnd={(event) => {
+                if (event.target === event.currentTarget) endMotion();
+              }}
+            >
               <span className="label">Get Started</span>
               <span className="arrow-box" aria-hidden="true">
                 <svg viewBox="0 0 14 14" fill="none">
@@ -178,26 +186,6 @@ export function Vantage() {
               </span>
             </button>
           </div>
-
-          <article
-            className="demo-card"
-            onAnimationEnd={(event) => {
-              if (event.target === event.currentTarget) endMotion();
-            }}
-          >
-            <div className="demo-visual">
-              {/* eslint-disable-next-line @next/next/no-img-element -- статичный SVG, оптимизатору нечего делать */}
-              <img src="/assets/watch-demo-thumbnail.svg" alt="Abstract red and blue smoke" draggable={false} />
-              <button type="button" className="play" aria-label="Explore services" onClick={goToContact}>
-                <svg viewBox="0 0 12 14" aria-hidden="true">
-                  <path d="M1 1.4v11.2a.6.6 0 0 0 .92.5l9.1-5.6a.6.6 0 0 0 0-1L1.92.9A.6.6 0 0 0 1 1.4Z" fill="currentColor" />
-                </svg>
-              </button>
-            </div>
-            <button type="button" className="watch-button" onClick={goToContact}>
-              Explore Services
-            </button>
-          </article>
         </section>
       </section>
     </main>

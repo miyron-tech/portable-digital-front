@@ -1,0 +1,21 @@
+.site-footer-wordmark {
+  overflow: hidden;
+  padding-top: clamp(28px, 5vw, 80px);
+  text-align: center;
+  user-select: none;
+  pointer-events: none;
+}
+
+.site-footer-wordmark span {
+  display: block;
+  margin: 0 0 -.14em;
+  padding-right: .075em;
+  font-size: clamp(70px, 20.6vw, 360px);
+  font-weight: 700;
+  letter-spacing: -.075em;
+  line-height: .95;
+  background: linear-gradient(180deg, #303435 5%, #1c2021 58%, #080a0b 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}

@@ -3,28 +3,43 @@ import { CATEGORIES } from '@/lib/format';
 import { SITE_NAME } from '@/lib/site';
 import { Container } from './Container';
 import { Year } from './Year';
+import { COMPANY_NAME, COMPANY_NUMBER, legalDocuments } from '@/lib/legal';
+import { Brand } from './Brand';
+import './footer-wordmark.css';
 
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-line py-10 text-sm text-muted">
-      <Container className="flex flex-col gap-6 sm:flex-row sm:justify-between">
-        <div>
-          <p className="font-semibold text-fg">Portable digital</p>
-          <p className="mt-1 max-w-xs">Product engineering, infrastructure and support for growing teams.</p>
-        </div>
-        <ul className="grid grid-cols-2 gap-x-8 gap-y-1.5">
+    <footer className="site-footer">
+      <Container>
+        <div className="site-footer-main">
+          <div className="site-footer-intro">
+            <Link href="/" aria-label="Portable digital home" className="site-footer-brand"><Brand /></Link>
+            <p>Product engineering, infrastructure<br className="hidden sm:block" /> and support for growing teams.</p>
+            <Link href="/contact" className="site-footer-contact">Let’s build something <span aria-hidden="true">↗</span></Link>
+          </div>
+          <nav aria-label="Footer services" className="site-footer-nav">
+            <h2>Services</h2>
+            <ul>
           {CATEGORIES.map((category) => (
             <li key={category.value}>
-              <Link href={`/services?category=${category.value}`} className="hover:text-fg">
+              <Link href={`/services?category=${category.value}`}>
                 {category.label}
               </Link>
             </li>
           ))}
-        </ul>
+            </ul>
+          </nav>
+          <nav aria-label="Legal" className="site-footer-nav">
+            <h2>Legal & company</h2>
+            <ul>{legalDocuments.map((document) => <li key={document.slug}><Link href={`/legal/${document.slug}`}>{document.title}</Link></li>)}</ul>
+          </nav>
+        </div>
+        <div className="site-footer-bottom">
+          <div className="site-footer-company"><span>{COMPANY_NAME}</span><span>Company No. {COMPANY_NUMBER}</span></div>
+          <div className="site-footer-meta"><span>© <Year /> {SITE_NAME}</span><Link href="/admin">Administration <span aria-hidden="true">↗</span></Link></div>
+        </div>
       </Container>
-      <Container className="mt-8">
-        © <Year /> {SITE_NAME} · <Link href="/admin" className="hover:text-fg">Administration ↗</Link>
-      </Container>
+      <div className="site-footer-wordmark" aria-hidden="true"><span>Portable</span></div>
     </footer>
   );
 }

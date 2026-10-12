@@ -72,6 +72,10 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .store-check input { width: 16px; height: 16px; accent-color: #b3c9d3; flex-shrink: 0; }
 .store-row { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 14px 0; border-bottom: 1px solid #ffffff12; }
 .store-row:last-child { border-bottom: 0; }
+/* Оплата в «Моих заказах»: кнопка и ссылка в строку, форма данных плательщика — на всю ширину под ними. */
+.store-order-pay { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
+.store-order-pay > form { flex-basis: 100%; margin-bottom: 0; }
+.store-order-pay > .store-error { flex-basis: 100%; margin: 0; }
 .store-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .store-toolbar { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin-bottom: 24px; }
 .store-tabs { display: flex; gap: 4px; padding: 5px; border: 1px solid var(--line); border-radius: 9px; }
@@ -88,9 +92,6 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .store-summary li { padding: 10px 0; font-size: 13px; color: #bccacf; }
 .store-total { font-size: 30px; font-weight: 500; letter-spacing: -.04em; }
 .store-badge { display: inline-flex; align-items: center; border: 1px solid #ffffff22; border-radius: 30px; padding: 5px 10px; font-size: 11px; color: #c9d5d9; width: fit-content; white-space: nowrap; }
-.store-demo-card { aspect-ratio: 1.9; max-width: 370px; border-radius: 15px; padding: 24px; background: radial-gradient(ellipse at 100% 0, #48626c, transparent), linear-gradient(135deg, #273b44, #0d1519); border: 1px solid #73889066; display: flex; flex-direction: column; justify-content: space-between; }
-.store-demo-card span { font-size: 10px; letter-spacing: .13em; color: #bdced4; }
-.store-demo-card strong { font-size: 20px; font-weight: 400; }
 .store-table-wrap { overflow-x: auto; }
 .store-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
 .store-table th { color: var(--muted); font-weight: 400; font-size: 11px; padding: 0 18px 16px 0; }
@@ -156,3 +157,29 @@ button:disabled { cursor: not-allowed; opacity: .45; }
 .store-art-featured { background: #0a0e1270; backdrop-filter: blur(8px); color: #d0d6d8; }
 @media (max-width: 480px) { .portable-brand { font-size: 14px; gap: 6px; } .portable-mark { width: 26px; height: 26px; } }
 @media (prefers-reduced-motion: reduce) { .store-service-image, .store-service-card { transition: none; } }
+
+.site-footer { margin-top: 96px; border-top: 1px solid #ffffff16; background: #060809; color: #9aa5ab; font-size: 13px; }
+.site-footer-main { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding: 56px 0 48px; }
+.site-footer-brand { display: inline-flex; color: #f0f3f4; }
+.site-footer .portable-brand { font-size: 23px; letter-spacing: -.8px; }
+.site-footer-intro p { margin: 17px 0 22px; line-height: 1.8; max-width: 310px; }
+.site-footer-contact { display: inline-flex; align-items: center; gap: 22px; color: #e0e5e7; padding: 5px 0; }
+.site-footer-contact span { font-size: 18px; }
+.site-footer-nav h2 { margin: 3px 0 19px; color: #e0e5e7; font-size: 11px; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+.site-footer-nav ul { display: grid; gap: 2px; list-style: none; margin: 0; padding: 0; }
+.site-footer-nav a { display: inline-block; padding: 6px 0; line-height: 1.5; }
+.site-footer a { transition: color .18s; }
+.site-footer a:hover { color: #fff; }
+.site-footer a:focus-visible { outline: 2px solid #d9e1e4; outline-offset: 5px; border-radius: 2px; }
+.site-footer-bottom { border-top: 1px solid #ffffff16; padding: 23px 0 27px; display: flex; justify-content: space-between; gap: 20px 32px; font-size: 11px; line-height: 1.7; }
+.site-footer-company, .site-footer-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; }
+.site-footer-company > span:first-child { color: #b4bdc2; font-size: 10px; letter-spacing: .06em; }
+.site-footer-meta a { color: #87939a; }
+@media (max-width: 760px) {
+  .site-footer-main { grid-template-columns: 1fr 1fr; gap: 32px 24px; padding: 38px 0 32px; }
+  .site-footer-intro { grid-column: 1 / -1; }
+  .site-footer-intro p { margin: 12px 0; }
+  .site-footer-bottom { flex-direction: column; gap: 14px; }
+  .site-footer-company, .site-footer-meta { justify-content: space-between; gap: 6px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .site-footer a { transition: none; } }

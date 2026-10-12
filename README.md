@@ -41,5 +41,8 @@ Until then the page falls back to Arial.
 
 `public/videos/*.mp4` play in turn with a crossfade (`REEL` in `src/app/(landing)/Vantage.tsx`).
 The LED look is baked into the files with `scripts/led-video.sh` (ffmpeg); sources are Mixkit clips
-(free Mixkit License): 45219 "Android walking robotically against a green screen" and 20970 "Robotic arm in a factory".
+(free Mixkit License): 45219 "Android walking robotically against a green screen", 20970 "Robotic arm in a factory"
+and 45229 "Space shuttle taking off from Earth" (`rocket-launch.mp4`).
+The launch clip goes through `led-video.sh` with the pre-filter
+`scale=1920:1080,curves=all='0/0 0.4/0.02 0.75/0.35 1/1'`: crushed shadows leave only the plume lit.
 # portable-digital-front

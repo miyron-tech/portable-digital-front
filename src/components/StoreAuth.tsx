@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 import { storeApi, type StoreUser } from '@/lib/store-client';
 
 export function StoreAuth({ onLogin, admin = false }: { onLogin: (user: StoreUser) => void; admin?: boolean }) {
@@ -21,6 +22,7 @@ export function StoreAuth({ onLogin, admin = false }: { onLogin: (user: StoreUse
     {register && <label>Name<input name="name" required minLength={2} maxLength={120} autoComplete="name" /></label>}
     <label>Email<input name="email" type="email" required autoComplete="email" /></label>
     <label>Password<input name="password" type="password" required minLength={register ? 8 : 1} autoComplete={register ? 'new-password' : 'current-password'} /></label>
+    {register && <p className="store-muted text-sm">Read our <Link href="/legal/terms-of-service" className="underline">Terms of Service</Link> and <Link href="/legal/privacy-policy" className="underline">Privacy Policy</Link> for account use and how we handle your information.</p>}
     {error && <p role="alert" className="store-error">{error}</p>}
     <button className="store-button" disabled={busy}>{busy ? 'Please wait…' : register ? 'Create account →' : 'Sign in →'}</button>
     {!admin && <button type="button" className="store-link" onClick={() => { setRegister(!register); setError(''); }}>{register ? 'Already have an account? Sign in' : 'New here? Create an account'}</button>}

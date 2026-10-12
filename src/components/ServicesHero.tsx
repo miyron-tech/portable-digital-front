@@ -34,8 +34,8 @@ export function ServicesHero() {
     </div>
     <Container className="services-hero-inner">
       <div className="services-hero-top"><span className="store-eyebrow">PORTABLE DIGITAL / SERVICES</span><span className="services-availability"><i /> BUILT TO MOVE YOU FORWARD</span></div>
-      <div className="services-hero-copy"><h1><span>Big ideas.</span><span>Built to work.</span></h1><p>From the first line of code to your next big launch.<br />Engineering, design and digital expertise.<br />One team. No loose ends.</p><a href="#catalogue" className="services-hero-button">Explore services <span>↗</span></a></div>
-      <div className="services-hero-bottom"><div className="services-reel-control"><div className="services-scene-dots">{scenes.map((s, i) => <button key={s.label} onClick={() => setScene(i)} aria-label={s.name} aria-pressed={scene === i}><span /></button>)}</div><span>{scenes[scene].label}</span><button onClick={() => setPaused(!paused)} className="services-pause" aria-label={paused ? 'Play animation' : 'Pause animation'}>{paused ? '▶' : 'Ⅱ'}</button></div><Link href="/contact" className="services-hero-contact">Something more ambitious?<span>Let’s talk ↗</span></Link></div>
+      <div className="services-hero-copy"><h1><span>Big ideas.</span><span>Built to work.</span></h1><p>From the first line of code to your next big launch.<br />Engineering, design and digital expertise.<br />One team. No loose ends.</p><a href="#catalogue" className="services-hero-button">Discover our services</a></div>
+      <div className="services-hero-bottom"><div className="services-reel-control"><div className="services-scene-dots">{scenes.map((s, i) => <button key={s.label} onClick={() => setScene(i)} aria-label={s.name} aria-pressed={scene === i}><span /></button>)}</div><span>{scenes[scene].label}</span><button onClick={() => setPaused(!paused)} className="services-pause" aria-label={paused ? 'Play animation' : 'Pause animation'}>{paused ? 'Play' : 'Pause'}</button></div><Link href="/contact" className="services-hero-contact">Something more ambitious?<span>Let’s talk</span></Link></div>
     </Container>
   </section>;
 }

@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { PayButton } from './PayButton';
 import { StoreAuth } from './StoreAuth';
 import { storeApi, type StoreUser, type StoreOrder } from '@/lib/store-client';
 import { formatMoney, ratePrice, rateTitle } from '@/lib/format';
@@ -17,7 +18,6 @@ export function Checkout({ service }: { service: Service }) {
   const [quote, setQuote] = useState<{ total: number; currency: string } | null>(null);
   const [estimate, setEstimate] = useState<Estimate | null>(null);
   const [order, setOrder] = useState<StoreOrder | null>(null);
-  const [paid, setPaid] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   useEffect(() => { storeApi<StoreUser>('auth/me').then(setUser).catch(() => null).finally(() => setReady(true)); }, []);
@@ -32,13 +32,13 @@ export function Checkout({ service }: { service: Service }) {
   async function action(work: () => Promise<void>) { setBusy(true); setError(''); try { await work(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }
   if (!rate) return <div className="store-panel"><h2>A scope built around you</h2><Link className="store-button" href="/contact">Discuss your project →</Link></div>;
   return <div className="store-checkout">
-    <div><span className="store-eyebrow">{paid ? '03 / ALL SET' : order ? '02 / DEMO PAYMENT' : '01 / CHECKOUT'}</span><h1>{paid ? 'Ready for what is next.' : 'Make your next move.'}</h1><p className="store-muted">{service.title}</p>
-      {order ? <section className="store-panel store-form">
-        <span className="store-badge">Demo mode</span><h2>{paid ? 'Demo payment complete' : 'Your order is ready'}</h2>
+    <div><span className="store-eyebrow">{order ? '02 / PAYMENT' : '01 / CHECKOUT'}</span><h1>Make your next move.</h1><p className="store-muted">{service.title}</p>
+      {order && user ? <section className="store-panel store-form">
+        <h2>Your order is ready</h2>
         <p>Order {order.orderNumber}</p><strong className="store-total">{formatMoney(order.total, order.currency)}</strong>
-        <p className="store-muted">{paid ? 'No money was charged. Your order is saved and remains awaiting payment.' : 'This is a payment preview. No card details are needed and you will not be charged.'}</p>
-        {!paid && <><div className="store-demo-card"><span>DEMO CARD</span><strong>•••• &nbsp; •••• &nbsp; •••• &nbsp; 4242</strong><span>PORTABLE DIGITAL / TEST PAYMENT</span></div><button className="store-button" onClick={() => setPaid(true)}>Pay {formatMoney(order.total, order.currency)} · demo →</button></>}
-        <Link className="store-link" href="/account">My orders →</Link><Link className="store-link" href="/services">Back to services</Link>
+        <p className="store-muted">You will pay by card on the secure page of our payment partner and come back here once it is done.</p>
+        <PayButton order={order} user={user} />
+        <Link className="store-link" href="/account">Pay later from My orders →</Link>
       </section> : <>
         {!estimate && <section className="store-panel store-form"><h2>Make it your own</h2>
           <label>Plan<select value={rateIndex} onChange={e => { const index = Number(e.target.value); setRateIndex(index); setUnits(service.pricing[index].minUnits || 1); setMilestones([]); setQuote(null); }}>
@@ -54,7 +54,8 @@ export function Checkout({ service }: { service: Service }) {
           {estimate.items.map(item => <div className="store-row" key={item.id}><span>{item.title} × {item.units}</span><strong>{formatMoney(item.pricing.total, estimate.currency)}</strong><button type="button" className="store-link" disabled={busy} aria-label={`Remove ${item.title}`} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>(`estimate/items/${item.id}`, 'DELETE')); })}>×</button></div>)}
           <label>Phone<input name="phone" type="tel" maxLength={40} autoComplete="tel" /></label><label>Company<input name="company" maxLength={120} autoComplete="organization" /></label><label>About your project<textarea name="note" maxLength={2000} rows={3} /></label>
           <div className="store-row"><span>Total</span><strong className="store-total">{formatMoney(estimate.total, estimate.currency)}</strong></div>
-          <button className="store-button" disabled={busy || !estimate.items.length}>{busy ? 'Creating order…' : 'Create order & preview payment →'}</button><button type="button" className="store-link" disabled={busy} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>('estimate/refresh', 'POST')); })}>Refresh prices</button>
+          <p className="store-muted text-sm">Creating the order does not charge you — you pay on the next step. Review our <Link href="/legal/terms-of-service" className="underline">Terms of Service</Link>, <Link href="/legal/refund-cancellation" className="underline">Refund & Cancellation</Link> and <Link href="/legal/privacy-policy" className="underline">Privacy Policy</Link>.</p>
+          <button className="store-button" disabled={busy || !estimate.items.length}>{busy ? 'Creating order…' : 'Create order & continue to payment →'}</button><button type="button" className="store-link" disabled={busy} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>('estimate/refresh', 'POST')); })}>Refresh prices</button>
           <Link className="store-link" href="/services">Add another service →</Link>
         </form>}
       </>}{error && <p role="alert" className="store-error">{error}</p>}

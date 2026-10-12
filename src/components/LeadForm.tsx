@@ -1,11 +1,16 @@
 'use client';
 
 import { useActionState, useState } from 'react';
+import Link from 'next/link';
 import { submitLead, type LeadFormState } from '@/app/(site)/contact/actions';
 
 const MAX_FILES = 5;
 const MAX_TOTAL_BYTES = 20 * 1024 * 1024;
 const ACCEPT = '.pdf,.zip,.png,.jpg,.jpeg,.webp,.txt,.csv,.doc,.docx';
+
+function formatSize(bytes: number) {
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
 
 const input =
   'w-full rounded-lg border border-line bg-surface px-3.5 py-2.5 text-sm text-fg placeholder:text-muted/70 outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25';
@@ -15,6 +20,7 @@ export function LeadForm({ service }: { service?: string }) {
     status: 'idle',
   });
   const [fileError, setFileError] = useState<string | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   if (state.status === 'success') {
     return (
@@ -105,15 +111,41 @@ export function LeadForm({ service }: { service?: string }) {
             className={input}
           />
         </label>
-        <label className="grid gap-1.5 text-sm">
+        <label className="grid min-w-0 gap-1.5 text-sm">
           <span className="font-medium">Attachments</span>
+          {/* Нативный file input не сжимается под колонку и вылезал за карточку:
+              сам input скрыт, а видно поле в стиле остальных. */}
           <input
             name="files"
             type="file"
             multiple
             accept={ACCEPT}
-            className="text-sm text-muted file:mr-3 file:rounded-md file:border-0 file:bg-accent/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-accent"
+            className="peer sr-only"
+            onChange={(event) => {
+              setFiles(Array.from(event.currentTarget.files ?? []));
+              setFileError(null);
+            }}
           />
+          <span
+            className={`${input} flex min-w-0 cursor-pointer items-center gap-2 peer-focus-visible:border-accent peer-focus-visible:ring-2 peer-focus-visible:ring-accent/25`}
+          >
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="size-4 shrink-0 text-muted">
+              <path
+                d="m13.5 7.5-5.3 5.3a3.2 3.2 0 0 1-4.5-4.5l5.6-5.6a2.1 2.1 0 0 1 3 3L6.7 11.3a1.1 1.1 0 0 1-1.5-1.5l5-5"
+                stroke="currentColor"
+                strokeWidth="1.3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className={`truncate ${files.length ? 'text-fg' : 'text-muted/70'}`}>
+              {files.length === 0
+                ? 'Attach files'
+                : files.length === 1
+                  ? files[0].name
+                  : `${files.length} files · ${formatSize(files.reduce((sum, file) => sum + file.size, 0))}`}
+            </span>
+          </span>
         </label>
       </div>
 
@@ -123,6 +155,7 @@ export function LeadForm({ service }: { service?: string }) {
         </p>
       ) : null}
 
+      <p className="text-xs leading-5 text-muted">We use your details to respond to this request. Read our <Link href="/legal/privacy-policy" className="underline underline-offset-4">Privacy Policy</Link>. Please do not include passwords or payment card details.</p>
       <div className="flex flex-wrap items-center gap-4">
         <button
           type="submit"

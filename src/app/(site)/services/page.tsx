@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { Container } from '@/components/Container';
-import { ServiceGrid, ServiceGridSkeleton } from '@/components/ServiceCard';
+import { ServiceStories, ServiceStoriesSkeleton } from '@/components/ServiceStories';
 import { Unavailable } from '@/components/Unavailable';
 import { getServices } from '@/lib/api';
 import { CATEGORIES, isCategory } from '@/lib/format';
 import type { ServiceCategory } from '@/lib/types';
 import { ServicesHero } from '@/components/ServicesHero';
 import './services.css';
+import '@/components/services-refinement.css';
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -42,14 +43,13 @@ function href(filters: Partial<Filters>) {
 export default function ServicesPage({ searchParams }: PageProps<'/services'>) {
   return (
     <div className="services-page"><ServicesHero />
-    <Container className="services-capabilities"><span>THE RIGHT EXPERTISE.<br /><strong>RIGHT WHEN YOU NEED IT.</strong></span><div>Development</div><div>Design</div><div>Infrastructure</div><div>Data & AI</div></Container>
     <Container className="services-catalogue">
-      <div id="catalogue" className="services-section-heading"><div><span className="store-eyebrow">01 / FIND YOUR NEXT MOVE</span><h2>Expertise. <span>On demand.</span></h2></div><p>A clear scope. A considered approach.<br />Pick your starting point. We’ll handle the complexity.</p></div>
+      <div id="catalogue" className="services-section-heading"><div><span className="store-eyebrow">OUR PRACTICE</span><h2>Good work starts<br /><span>with understanding.</span></h2></div><p>Take a closer look at what we do,<br />what goes into it, and where it can take you.</p></div>
       <Suspense fallback={<CatalogueFallback />}>
         <Catalogue searchParams={searchParams} />
       </Suspense>
     </Container>
-    <Container className="services-bottom"><div className="services-bottom-art" /><div><span className="store-eyebrow">NOT EVERY PROJECT FITS A BOX.</span><h2>Let’s build<br /><span>your kind of different.</span></h2><p>Complex integrations. An ambitious idea. A fresh start.<br />Tell us where you want to go.</p><Link href="/contact" className="store-button">Talk about your project <span>↗</span></Link></div><span className="services-bottom-index">PD / NEXT</span></Container>
+    <Container className="services-bottom"><div className="services-bottom-art" /><div><span className="store-eyebrow">A CONVERSATION IS A GOOD START.</span><h2>Something<br /><span>on your mind?</span></h2><p>Tell us what you’re working on.<br />We’ll help you find the right way forward.</p><Link href="/contact" className="service-story-primary">Talk about your project</Link></div></Container>
     </div>
   );
 }
@@ -59,7 +59,7 @@ function CatalogueFallback() {
     <>
       <div className="mt-10 h-10" />
       <div className="mt-8">
-        <ServiceGridSkeleton />
+        <ServiceStoriesSkeleton />
       </div>
     </>
   );
@@ -67,7 +67,7 @@ function CatalogueFallback() {
 
 async function Catalogue({ searchParams }: { searchParams: PageProps<'/services'>['searchParams'] }) {
   const filters = readFilters(await searchParams);
-  const result = await getServices(filters).catch(() => null);
+  const result = await getServices({ ...filters, limit: 6 }).catch(() => null);
 
   return (
     <>
@@ -103,7 +103,7 @@ async function Catalogue({ searchParams }: { searchParams: PageProps<'/services'
       </div>
 
       <div className="mt-8">
-        {result && <div className="services-result-count"><span>{String(result.total).padStart(2, '0')} SERVICES {filters.category ? `/ ${CATEGORIES.find(c => c.value === filters.category)?.label.toUpperCase()}` : '/ ALL CAPABILITIES'}</span><span>Scope → Configure → Launch</span></div>}
+        {result && <div className="services-result-count"><span>{String(result.total).padStart(2, '0')} SERVICES {filters.category ? `/ ${CATEGORIES.find(c => c.value === filters.category)?.label.toUpperCase()}` : '/ ALL CAPABILITIES'}</span><span>A closer look at our work</span></div>}
         {!result ? (
           <Unavailable />
         ) : result.items.length === 0 ? (
@@ -115,7 +115,7 @@ async function Catalogue({ searchParams }: { searchParams: PageProps<'/services'
           </div>
         ) : (
           <>
-            <ServiceGrid services={result.items} />
+            <ServiceStories services={result.items} offset={(result.page - 1) * result.limit} />
             {result.pages > 1 ? (
               <nav aria-label="Pagination" className="mt-10 flex justify-center gap-2">
                 {Array.from({ length: result.pages }, (_, index) => index + 1).map((page) => (

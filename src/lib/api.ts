@@ -47,6 +47,7 @@ export async function getCategories(): Promise<CategoryCount[]> {
 }
 
 export interface ServiceQuery {
+  limit?: number;
   category?: ServiceCategory;
   search?: string;
   page?: number;
@@ -56,6 +57,7 @@ export async function getServices(query: ServiceQuery): Promise<Paginated<Servic
   'use cache';
   catalogueCache();
   const params = new URLSearchParams();
+  if (query.limit) params.set('limit', String(query.limit));
   if (query.category) params.set('category', query.category);
   if (query.search) params.set('search', query.search);
   if (query.page && query.page > 1) params.set('page', String(query.page));

@@ -16,7 +16,7 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   const { path } = await context.params;
   const route = path.join('/');
   const method = request.method;
-  const allowed = /^(auth\/(login|register|logout|me)|services(\/admin\/all|\/[a-z0-9-]+)?|estimate(\/items(\/[a-f0-9]+)?|\/price|\/refresh)?|orders(\/all|\/[a-zA-Z0-9-]+(\/status)?)?)$/;
+  const allowed = /^(auth\/(login|register|logout|me)|services(\/admin\/all|\/[a-z0-9-]+)?|estimate(\/items(\/[a-f0-9]+)?|\/price|\/refresh)?|orders(\/all|\/[a-zA-Z0-9-]+(\/status)?)?|payments\/(initiate|status\/\d{6}))$/;
   if (!allowed.test(route)) return Response.json({ message: 'Not found' }, { status: 404 });
   if (method !== 'GET' && request.headers.get('origin') !== publicOrigin(request)) {
     return Response.json({ message: 'Invalid origin' }, { status: 403 });

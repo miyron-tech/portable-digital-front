@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { PayButton } from './PayButton';
 import { StoreAuth } from './StoreAuth';
-import { storeApi, StoreError, type StoreOrder, type StorePayment, type StoreUser } from '@/lib/store-client';
+import { storeApi, StoreError, termsLine, type StoreOrder, type StorePayment, type StoreUser } from '@/lib/store-client';
 import { formatMoney } from '@/lib/format';
 
 const POLL_MS = 3000;
@@ -90,6 +90,7 @@ export function PaymentResult({ orderNumber }: { orderNumber: string }) {
           <p>{order.items.map(item => `${item.title} × ${item.units}`).join(', ')}</p>
           <p className="store-muted" role="status">{text}</p>
           {(view === 'failed' || view === 'unpaid') && <PayButton order={order} user={user} label={view === 'failed' ? `Try again · ${formatMoney(order.total, order.currency)} →` : undefined} />}
+          {termsLine(order) && <p className="store-muted">{termsLine(order)}</p>}
           {payment?.paidAt && <p className="store-muted">Paid on {new Date(payment.paidAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</p>}
           <Link className="store-link" href="/account">My orders →</Link>
         </section>

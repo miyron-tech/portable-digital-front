@@ -90,7 +90,7 @@ export function PayButton({ order, user, label, className = 'store-button' }: Pr
           </select>
         </label>
         {error && <p role="alert" className="store-error">{error}</p>}
-        <button className="store-button" disabled={busy}>{busy ? 'Opening secure payment…' : `Continue to payment · ${formatMoney(order.total, order.currency)} →`}</button>
+        <button className="store-button" disabled={busy}>{busy ? 'Opening secure payment…' : `Pay ${formatMoney(order.total, order.currency)} now →`}</button>
       </form>
     );
   }
@@ -98,7 +98,7 @@ export function PayButton({ order, user, label, className = 'store-button' }: Pr
   return (
     <>
       <button type="button" className={className} disabled={busy} onClick={() => run(pay)}>
-        {busy ? 'Opening secure payment…' : label ?? `Pay ${formatMoney(order.total, order.currency)} →`}
+        {busy ? 'Opening secure payment…' : label ?? `Pay ${formatMoney(order.total, order.currency)} now →`}
       </button>
       {error && <p role="alert" className="store-error">{error}</p>}
     </>

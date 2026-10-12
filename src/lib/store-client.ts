@@ -12,6 +12,12 @@ export class StoreError extends Error {
   constructor(message: string, readonly status: number, readonly code?: string, readonly missing?: string[]) { super(message); this.name = 'StoreError'; }
 }
 export interface StoreUser { id: string; name: string; email: string; role: string }
-export interface StoreOrder { id: string; orderNumber: string; status: string; total: number; currency: string; customer: { name: string; email: string }; items: { title: string; units: number }[] }
+export interface StoreOrder { id: string; orderNumber: string; status: string; total: number; currency: string; customer: { name: string; email: string }; items: { title: string; units: number }[]; termsAcceptance?: { version: string; acceptedAt: string } | null }
+/** «Terms edition 12 October 2026, accepted 12 Oct 2026, 10:41» — для заказа. */
+export function termsLine(order: StoreOrder): string | null {
+  const terms = order.termsAcceptance;
+  if (!terms) return null;
+  return `Terms edition ${terms.version}, accepted ${new Date(terms.acceptedAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`;
+}
 export const orderLabels: Record<string, string> = { awaiting_payment: 'Awaiting payment', paid: 'Paid', in_progress: 'In progress', in_review: 'In review', completed: 'Completed', cancelled: 'Cancelled' };
 export interface StorePayment { status: 'created' | 'pending' | 'awaiting_approval' | 'authorized' | 'paid' | 'declined' | 'cancelled' | 'refunded'; isPaid: boolean; amount: number; currency: string; paidAt: string | null; redirectUrl: string | null }

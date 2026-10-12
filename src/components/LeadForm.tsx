@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useState } from 'react';
-import Link from 'next/link';
+import { DataNotice } from './DataNotice';
 import { submitLead, type LeadFormState } from '@/app/(site)/contact/actions';
 
 const MAX_FILES = 5;
@@ -155,7 +155,7 @@ export function LeadForm({ service }: { service?: string }) {
         </p>
       ) : null}
 
-      <p className="text-xs leading-5 text-muted">We use your details to respond to this request. Read our <Link href="/legal/privacy-policy" className="underline underline-offset-4">Privacy Policy</Link>. Please do not include passwords or payment card details.</p>
+      <DataNotice className="text-xs leading-5 text-muted" data="your name, email, phone, project description and any attached files" purpose="answer this request and prepare a proposal">. Please do not include passwords or payment card details.</DataNotice>
       <div className="flex flex-wrap items-center gap-4">
         <button
           type="submit"

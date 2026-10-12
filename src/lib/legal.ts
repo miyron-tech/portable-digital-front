@@ -1,6 +1,6 @@
 export const COMPANY_NAME = 'PORTABLE DIGITAL LIMITED';
 export const COMPANY_NUMBER = '16974578';
-export const LEGAL_VERSION = '9 October 2026';
+export const LEGAL_VERSION = '12 October 2026';
 
 export type LegalDocument = { slug: string; title: string; description: string; sections: { title: string; paragraphs: string[] }[] };
 
@@ -16,11 +16,11 @@ export const legalDocuments: LegalDocument[] = [
       { title: 'Enquiries, estimates and the contract', paragraphs: [
         'Catalogue descriptions and estimates explain the proposed service; they are not acceptance of an order. Before a binding paid engagement, we will agree the scope, deliverables, price and currency, applicable taxes, payment schedule, delivery timetable, dependencies and any ongoing term in writing. You can correct details before submitting your request.',
         'A service contract is formed when we expressly accept your order in writing and provide the agreed terms in a form you can keep. An automated acknowledgement alone is not acceptance. We will correct pricing errors with you before acceptance; you may decline the corrected proposal. Additional work or charges require your agreement.',
-        'The current website checkout is a demonstration: creating an order or completing the demo payment does not charge you, create a paid engagement or instruct us to begin work. A real payment arrangement requires a separate, clearly identified confirmation.'
+        'Creating an order on the website does not charge you. When card payments are enabled, you can pay the total shown for an order on the secure hosted page of our payment provider. Paying is your offer to buy the selected service at that price; the contract is formed when we confirm acceptance in writing. If we cannot accept a paid order, we refund the full amount. An order left unpaid creates no obligation.'
       ] },
       { title: 'Prices, payment and ongoing services', paragraphs: [
         'The final proposal must state the total payable, including applicable taxes and unavoidable charges, or the calculation method where a total cannot reasonably be fixed in advance. Estimates are not permission to exceed an agreed budget. You are responsible for charges your bank discloses for currency conversion.',
-        'Payment dates and milestones are agreed before acceptance. A retainer or recurring service must state its billing interval, minimum commitment, renewal arrangements and cancellation method. Selecting a number of periods in the demo does not authorise recurring charges. No automatic renewal or payment is authorised solely by these terms.'
+        'Payment dates and milestones are agreed before acceptance. A retainer or recurring service must state its billing interval, minimum commitment, renewal arrangements and cancellation method. Paying for a number of periods at checkout is a one-off payment for those periods; it does not authorise recurring charges. No automatic renewal or payment is authorised solely by these terms.'
       ] },
       { title: 'Performance and customer cooperation', paragraphs: [
         'We will perform services with reasonable care and skill, in accordance with the agreed description and timetable, or within a reasonable time where no time is agreed. Information about the service on which a consumer relies remains binding where the law requires.',
@@ -51,8 +51,8 @@ export const legalDocuments: LegalDocument[] = [
     slug: 'refund-cancellation', title: 'Refund & Cancellation',
     description: 'Consumer cancellation rights, early starts, service problems and refunds.',
     sections: [
-      { title: 'Scope and demo payments', paragraphs: [
-        'This policy concerns services supplied by PORTABLE DIGITAL LIMITED, company number 16974578. Mandatory rights take priority. The website currently offers a demo payment flow and does not collect money through that flow; a demo transaction has no funds to refund.',
+      { title: 'Scope', paragraphs: [
+        'This policy concerns services supplied by PORTABLE DIGITAL LIMITED, company number 16974578. Mandatory rights take priority. It applies to card payments made through the website checkout and to payments under an accepted written proposal.',
         'For a paid engagement, the accepted proposal identifies what you bought, the start date, the price and any ongoing commitment. Business customers do not normally have the statutory consumer cooling-off right, but retain their contractual and other legal remedies.'
       ] },
       { title: 'Consumer cooling-off period', paragraphs: [
@@ -93,8 +93,8 @@ export const legalDocuments: LegalDocument[] = [
         'This notice covers visitors, enquirers, account holders, customers and business contacts. Where we process personal data solely on a client’s instructions within a project, the client normally acts as controller and a separate data processing agreement must define our processor obligations.'
       ] },
       { title: 'Information we collect and its sources', paragraphs: [
-        'You provide account information such as name, email and password; we store a password hash rather than a readable password. Enquiries may include phone number, project description, desired timeline and attachments. Orders contain selected services, prices, project notes, contact information and order history. Billing name and address may be required for a real payment.',
-        'Our systems process authentication tokens, request metadata and IP addresses for operation and security. If real payment processing is enabled for an engagement, the payment provider may return transaction references, payment status and fraud or reconciliation information. A business contact’s information may also be provided by their employer or authorised project representative.',
+        'You provide account information such as name, email and password; we store a password hash rather than a readable password. Enquiries may include phone number, project description, desired timeline and attachments. Orders contain selected services, prices, project notes, contact information and order history. Billing name and address are required to pay by card and are saved to your account for later payments.',
+        'Our systems process authentication tokens, request metadata and IP addresses for operation and security. When you pay by card, the payment provider returns a transaction reference, the payment status and any error or reconciliation information, which we store with the order. A business contact’s information may also be provided by their employer or authorised project representative.',
         'Do not submit payment card details, credentials, special-category data or third-party personal information through project forms unless a necessary and appropriate secure arrangement has first been agreed.'
       ] },
       { title: 'Purposes and lawful bases', paragraphs: [
@@ -104,7 +104,7 @@ export const legalDocuments: LegalDocument[] = [
       ] },
       { title: 'Recipients and payment processing', paragraphs: [
         'Access is limited to personnel and service providers who need information for the relevant task. Relevant categories include hosting and database providers, file storage and communications providers, delivery contractors, professional advisers and authorities where disclosure is legally required. Providers acting as processors must operate under appropriate contractual instructions.',
-        'The present checkout demonstration does not collect card details or send a demo payment to a payment provider. The backend includes a WemoPay integration for real payment arrangements: if used, it sends customer identity and email, billing details, order amount, currency and reference data needed to process the payment. Payment details entered on a provider’s hosted page are handled under that provider’s own notice. The provider’s legal identity and privacy notice must be confirmed before live payment activation.',
+        'Card payments are processed by our payment provider, WemoPay, on its own hosted payment page. To create a payment we send your name, email, billing address, the order amount, currency, a short description of the order and an order reference. We never receive or store your card number; card details entered on the provider’s page are handled under that provider’s own notice. The provider’s legal identity and privacy notice must be confirmed before live payment activation.',
         'We do not use the current storefront to sell personal information or operate advertising profiles. A corporate reorganisation may require limited disclosure under appropriate confidentiality and data-protection safeguards.'
       ] },
       { title: 'Storage, international access and security', paragraphs: [
@@ -135,7 +135,7 @@ export const legalDocuments: LegalDocument[] = [
       ] },
       { title: 'Authentication cookie', paragraphs: [
         'store_session — first-party, strictly necessary authentication cookie. It is set after successful sign-in or registration and allows the website to identify your session for account and order features. Its scope is the website path “/”. It is HttpOnly, uses SameSite=Lax and is marked Secure in production.',
-        'Its expiry matches the access-token lifetime configured by the server (the application default is 15 minutes). The browser’s cookie inspector shows the expiry of your actual session. Signing out deletes it from this browser. Changing the session configuration requires the published duration to be reviewed.',
+        'It expires after two hours, matching the access-token lifetime configured on the live server; after that you need to sign in again. The browser’s cookie inspector shows the expiry of your actual session. Signing out deletes it from this browser. Changing the session configuration requires the published duration to be reviewed.',
         'This cookie supports the account functionality you request; it is not used for advertising. Consent is not required for storage that meets the strictly necessary exemption, but this information is provided so you can understand its purpose.'
       ] },
       { title: 'Optional technologies and third parties', paragraphs: [
@@ -189,7 +189,7 @@ export const legalDocuments: LegalDocument[] = [
       ] },
       { title: 'Service and payment information', paragraphs: [
         'Portable digital offers digital engineering, development, infrastructure and support services to businesses and individual consumers. Scope, delivery, price and any ongoing commitment must be agreed for each paid engagement.',
-        'The current storefront checkout is a demonstration. It does not collect card details or charge the displayed amount. Any live paid engagement requires clear payment instructions and the required pre-contract information.'
+        'Orders from the catalogue can be paid by card on the secure hosted page of our payment provider, WemoPay, once card payments are enabled. We do not see or store card numbers. Every paid engagement requires clear payment instructions and the required pre-contract information.'
       ] },
       { title: 'Verification status', paragraphs: [
         'These legal pages are drafts pending verification of company contact details, commercial procedures, suppliers, data locations and retention arrangements. They must not be treated as a completed compliance statement or as confirmation that a paid service has been accepted. Consult the official register using the link below for company filings.'

@@ -2,6 +2,7 @@
 import { useMemo, useState } from 'react';
 import { storeApi, StoreError, type StoreUser } from '@/lib/store-client';
 import { formatMoney } from '@/lib/format';
+import { DataNotice } from './DataNotice';
 
 // ISO 3166-1 alpha-2: провайдер принимает страну только двухбуквенным кодом.
 const COUNTRY_CODES =
@@ -70,7 +71,7 @@ export function PayButton({ order, user, label, className = 'store-button' }: Pr
       >
         <div>
           <h2>Billing details</h2>
-          <p className="store-muted">Our payment partner needs the cardholder name and billing address. We save them to your profile for next time.</p>
+          <DataNotice data="your name and billing address" purpose="process your card payment with our payment provider, WemoPay (they are also saved to your profile for next time)" />
         </div>
         <div className="store-form-grid">
           <label>First name<input name="firstName" required maxLength={40} defaultValue={first} autoComplete="given-name" /></label>

@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { DataNotice } from './DataNotice';
 import { PayButton } from './PayButton';
 import { StoreAuth } from './StoreAuth';
 import { storeApi, type StoreUser, type StoreOrder } from '@/lib/store-client';
@@ -54,6 +55,7 @@ export function Checkout({ service }: { service: Service }) {
           {estimate.items.map(item => <div className="store-row" key={item.id}><span>{item.title} × {item.units}</span><strong>{formatMoney(item.pricing.total, estimate.currency)}</strong><button type="button" className="store-link" disabled={busy} aria-label={`Remove ${item.title}`} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>(`estimate/items/${item.id}`, 'DELETE')); })}>×</button></div>)}
           <label>Phone<input name="phone" type="tel" maxLength={40} autoComplete="tel" /></label><label>Company<input name="company" maxLength={120} autoComplete="organization" /></label><label>About your project<textarea name="note" maxLength={2000} rows={3} /></label>
           <div className="store-row"><span>Total</span><strong className="store-total">{formatMoney(estimate.total, estimate.currency)}</strong></div>
+          <DataNotice data="your phone, company and project notes, together with the order" purpose="deliver and invoice the order" />
           <p className="store-muted text-sm">Creating the order does not charge you — you pay on the next step. Review our <Link href="/legal/terms-of-service" className="underline">Terms of Service</Link>, <Link href="/legal/refund-cancellation" className="underline">Refund & Cancellation</Link> and <Link href="/legal/privacy-policy" className="underline">Privacy Policy</Link>.</p>
           <button className="store-button" disabled={busy || !estimate.items.length}>{busy ? 'Creating order…' : 'Create order & continue to payment →'}</button><button type="button" className="store-link" disabled={busy} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>('estimate/refresh', 'POST')); })}>Refresh prices</button>
           <Link className="store-link" href="/services">Add another service →</Link>

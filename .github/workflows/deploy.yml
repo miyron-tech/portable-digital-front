@@ -1,0 +1,99 @@
+name: Deploy frontend
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Очередь, а не отмена: начатый деплой обрывать нельзя.
+concurrency:
+  group: deploy-production-frontend
+  cancel-in-progress: false
+
+env:
+  DEPLOY_USER: root
+  DEPLOY_PATH: /opt/portable
+  PUBLIC_URL: https://portable.digital
+
+jobs:
+  build:
+    name: Lint and build (gate)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      # API в CI нет, и сборке он не нужен: каталог рендерится по запросу.
+      # Недоступный адрес — нарочно: сборка, полезшая в API, упадёт здесь.
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://portable.digital
+          API_URL: http://127.0.0.1:9/api
+
+  deploy:
+    name: Deploy to production
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check deploy secrets
+        run: |
+          missing=""
+          [ -n "$DEPLOY_SSH_KEY" ] || missing="$missing DEPLOY_SSH_KEY"
+          [ -n "$DEPLOY_KNOWN_HOSTS" ] || missing="$missing DEPLOY_KNOWN_HOSTS"
+          [ -n "$DEPLOY_HOST" ] || missing="$missing DEPLOY_HOST"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing secrets:$missing (Settings → Environments → production)"
+            exit 1
+          fi
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+
+      - name: Configure SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          install -m 600 /dev/stdin ~/.ssh/deploy_key <<< "$DEPLOY_SSH_KEY"
+          install -m 644 /dev/stdin ~/.ssh/known_hosts <<< "$DEPLOY_KNOWN_HOSTS"
+          # Опции в конфиге, а не в переменной: там `~` раскрывается.
+          printf 'Host *\n  IdentityFile ~/.ssh/deploy_key\n  IdentitiesOnly yes\n  StrictHostKeyChecking yes\n  BatchMode yes\n' > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+
+      - name: Sync sources
+        # Env-файлы на сервер не едут никогда: локальный .env.local с
+        # localhost-адресами не должен попасть в прод.
+        run: |
+          rsync -az --delete \
+            --exclude '.git' --exclude '.github' --exclude 'node_modules' \
+            --exclude '.next' --exclude '.env' --exclude '.env.*' --exclude '*.tsbuildinfo' \
+            -e ssh ./ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/front/"
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+
+      - name: Build and roll out
+        run: ssh "$DEPLOY_USER@$DEPLOY_HOST" "$DEPLOY_PATH/deploy.sh frontend ${GITHUB_SHA::7}"
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+
+      - name: Smoke test through the public domain
+        run: |
+          for path in / /services /contact; do
+            ok=0
+            for i in $(seq 1 10); do
+              code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$PUBLIC_URL$path" || true)
+              echo "attempt $i: $path -> $code"
+              if [ "$code" = "200" ]; then ok=1; break; fi
+              sleep 5
+            done
+            [ "$ok" = 1 ] || { echo "::error::$path is not serving"; exit 1; }
+          done

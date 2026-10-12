@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { LEGACY_SERVICE_REDIRECTS } from './src/lib/legacy-services';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -40,6 +41,13 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
+  },
+  // Старые адреса услуг (общие с buydone) — постоянный редирект на новые.
+  async redirects() {
+    return Object.entries(LEGACY_SERVICE_REDIRECTS).flatMap(([from, to]) => [
+      { source: `/services/${from}`, destination: `/services/${to}`, statusCode: 301 },
+      { source: `/checkout/${from}`, destination: `/checkout/${to}`, statusCode: 301 },
+    ]);
   },
   cacheComponents: true,
   partialPrefetching: true,

@@ -2,6 +2,7 @@
 import { useMemo, useState } from 'react';
 import { storeApi, StoreError, type StoreUser } from '@/lib/store-client';
 import { formatMoney } from '@/lib/format';
+import { AcceptedCards } from './AcceptedCards';
 import { DataNotice } from './DataNotice';
 
 // ISO 3166-1 alpha-2: провайдер принимает страну только двухбуквенным кодом.
@@ -90,6 +91,7 @@ export function PayButton({ order, user, label, className = 'store-button' }: Pr
           </select>
         </label>
         {error && <p role="alert" className="store-error">{error}</p>}
+        <AcceptedCards />
         <button className="store-button" disabled={busy}>{busy ? 'Opening secure payment…' : `Pay ${formatMoney(order.total, order.currency)} now →`}</button>
       </form>
     );
@@ -100,6 +102,7 @@ export function PayButton({ order, user, label, className = 'store-button' }: Pr
       <button type="button" className={className} disabled={busy} onClick={() => run(pay)}>
         {busy ? 'Opening secure payment…' : label ?? `Pay ${formatMoney(order.total, order.currency)} now →`}
       </button>
+      <AcceptedCards />
       {error && <p role="alert" className="store-error">{error}</p>}
     </>
   );

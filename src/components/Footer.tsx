@@ -4,6 +4,7 @@ import { SITE_NAME } from '@/lib/site';
 import { Container } from './Container';
 import { Year } from './Year';
 import { COMPANY_NAME, COMPANY_NUMBER, legalDocuments } from '@/lib/legal';
+import { AcceptedCards } from './AcceptedCards';
 import { Brand } from './Brand';
 import './footer-wordmark.css';
 
@@ -35,7 +36,7 @@ export function Footer() {
           </nav>
         </div>
         <div className="site-footer-bottom">
-          <div className="site-footer-company"><span>{COMPANY_NAME}</span><span>Company No. {COMPANY_NUMBER}</span></div>
+          <div className="site-footer-company"><span>{COMPANY_NAME}</span><span>Company No. {COMPANY_NUMBER}</span><AcceptedCards /></div>
           <div className="site-footer-meta"><span>© <Year /> {SITE_NAME}</span><Link href="/admin">Administration <span aria-hidden="true">↗</span></Link></div>
         </div>
       </Container>

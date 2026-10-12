@@ -5,7 +5,8 @@ import { DataNotice } from './DataNotice';
 import { PayButton } from './PayButton';
 import { StoreAuth } from './StoreAuth';
 import { storeApi, type StoreUser, type StoreOrder } from '@/lib/store-client';
-import { formatMoney, ratePrice, rateTitle } from '@/lib/format';
+import { formatMoney, rateNotes, ratePrice, rateTitle } from '@/lib/format';
+import { LEGAL_VERSION } from '@/lib/legal';
 import type { Service } from '@/lib/types';
 
 interface Estimate { currency: string; total: number; items: { id: string; title: string; units: number; pricing: { total: number } }[] }
@@ -46,17 +47,21 @@ export function Checkout({ service }: { service: Service }) {
             {service.pricing.map((r, i) => <option value={i} key={i}>{rateTitle(r)} · {ratePrice(r, service.currency)}</option>)}
           </select></label>
           <label>{rate.model === 'hourly' || rate.model === 'mixed' ? 'Number of hours' : rate.model === 'retainer' ? 'Number of periods' : 'Number of projects'}<input type="number" min={rate.minUnits || 1} max={rate.maxUnits || undefined} value={units} onChange={e => { setUnits(Number(e.target.value)); setQuote(null); }} /></label>
+          {/* Условия тарифа рядом с количеством: ставка, минимальный заказ суммой, округление неполного часа. */}
+          {rateNotes(rate, service.currency).length > 0 && <ul className="store-muted text-sm">{[ratePrice(rate, service.currency), ...rateNotes(rate, service.currency)].map(note => <li key={note}>{note}</li>)}</ul>}
           {rate.milestones.map(m => <label className="store-check" key={m.key}><input type="checkbox" checked={m.required || milestones.includes(m.key)} disabled={m.required} onChange={e => { setMilestones(e.target.checked ? [...milestones, m.key] : milestones.filter(key => key !== m.key)); setQuote(null); }} />{m.title} · {formatMoney(m.amount, service.currency)}{m.required ? ' (included)' : ''}</label>)}
           <p className="store-muted">Calculated using the current service rates.</p><strong className="store-total">{quote ? formatMoney(quote.total, quote.currency) : 'Calculating…'}</strong>
         </section>}
         {!ready ? <p>Checking your account…</p> : !user ? <StoreAuth onLogin={setUser} /> : !estimate ? <button className="store-button" disabled={busy || !quote || units < (rate.minUnits || 1)} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>('estimate/items', 'POST', { serviceId: service.id, model: rate.model, units, milestoneKeys: milestones })); })}>{busy ? 'Saving…' : 'Continue to checkout →'}</button> :
-        <form className="store-panel store-form" onSubmit={e => { e.preventDefault(); const form = new FormData(e.currentTarget); void action(async () => { setOrder(await storeApi<StoreOrder>('orders', 'POST', { phone: form.get('phone'), company: form.get('company'), note: form.get('note') })); }); }}>
+        <form className="store-panel store-form" onSubmit={e => { e.preventDefault(); const form = new FormData(e.currentTarget); void action(async () => { setOrder(await storeApi<StoreOrder>('orders', 'POST', { phone: form.get('phone'), company: form.get('company'), note: form.get('note'), acceptTerms: form.get('acceptTerms') === 'on', termsVersion: LEGAL_VERSION })); }); }}>
           <h2>Your order</h2><p className="store-muted">{user.name} · {user.email}</p>
           {estimate.items.map(item => <div className="store-row" key={item.id}><span>{item.title} × {item.units}</span><strong>{formatMoney(item.pricing.total, estimate.currency)}</strong><button type="button" className="store-link" disabled={busy} aria-label={`Remove ${item.title}`} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>(`estimate/items/${item.id}`, 'DELETE')); })}>×</button></div>)}
           <label>Phone<input name="phone" type="tel" maxLength={40} autoComplete="tel" /></label><label>Company<input name="company" maxLength={120} autoComplete="organization" /></label><label>About your project<textarea name="note" maxLength={2000} rows={3} /></label>
           <div className="store-row"><span>Total</span><strong className="store-total">{formatMoney(estimate.total, estimate.currency)}</strong></div>
           <DataNotice data="your phone, company and project notes, together with the order" purpose="deliver and invoice the order" />
-          <p className="store-muted text-sm">Creating the order does not charge you — you pay on the next step. Review our <Link href="/legal/terms-of-service" className="underline">Terms of Service</Link>, <Link href="/legal/refund-cancellation" className="underline">Refund & Cancellation</Link> and <Link href="/legal/privacy-policy" className="underline">Privacy Policy</Link>.</p>
+          <p className="store-muted text-sm">Creating the order does not charge you — you pay on the next step.</p>
+          {/* Явное согласие: без галочки форма не отправится, а бэкенд не примет заказ. Редакция уходит вместе с заказом и хранится в нём. */}
+          <label className="store-check"><input type="checkbox" name="acceptTerms" required />I have read and accept the <Link href="/legal/terms-of-service" className="underline" target="_blank">Terms of Service</Link> and the <Link href="/legal/refund-cancellation" className="underline" target="_blank">Refund & Cancellation</Link> policy (edition {LEGAL_VERSION}).</label>
           <button className="store-button" disabled={busy || !estimate.items.length}>{busy ? 'Creating order…' : 'Create order & continue to payment →'}</button><button type="button" className="store-link" disabled={busy} onClick={() => action(async () => { setEstimate(await storeApi<Estimate>('estimate/refresh', 'POST')); })}>Refresh prices</button>
           <Link className="store-link" href="/services">Add another service →</Link>
         </form>}

@@ -1,0 +1,8 @@
+.services-page { background: #080a0b; padding-bottom: 100px; }
+.services-page .services-filters nav a[aria-current=page] { color: #e89a65; border-color: #d27c43; }
+.services-page .services-section-heading .store-eyebrow { color: #c58254; }
+.services-page .services-bottom { margin-bottom: 32px; }
+.services-page .services-bottom-art { background: radial-gradient(ellipse at 80% 60%, #bd632010, transparent 55%); }
+.services-bottom .service-story-primary { background: transparent; color: #e0b18d; border-color: #986443; padding: 13px 21px; }
+.services-bottom .service-story-primary:hover { background: #b96e2112; border-color: #d78b56; }
+@media (max-width: 650px) { .services-page { padding-bottom: 64px; } .services-page .services-bottom { margin-bottom: 16px; } }

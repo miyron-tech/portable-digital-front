@@ -24,7 +24,14 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   const jar = await cookies();
   const token = jar.get('store_session')?.value;
   if (route === 'auth/logout') {
-    if (token) await fetch(`${API_URL}/auth/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(10000) }).catch(() => null);
+    if (token) {
+      try {
+        const result = await fetch(`${API_URL}/auth/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(10000) });
+        if (!result.ok && result.status !== 401) return Response.json({ message: 'We could not sign you out. Please try again.' }, { status: 502 });
+      } catch {
+        return Response.json({ message: 'We could not sign you out. Please try again.' }, { status: 502 });
+      }
+    }
     jar.delete('store_session');
     return Response.json({ success: true });
   }

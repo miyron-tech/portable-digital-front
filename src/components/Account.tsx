@@ -23,7 +23,7 @@ export function Account() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [ready, setReady] = useState(false);
-  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [loadingOrders, setLoadingOrders] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -37,7 +37,14 @@ export function Account() {
     storeApi<StoreUser>('auth/me').then(u => { if (active) setUser(u); }).catch(e => { if (active && !(e instanceof StoreError && e.status === 401)) setError('We could not load your account. Please try again.'); }).finally(() => { if (active) setReady(true); });
     return () => { active = false; };
   }, []);
-  useEffect(() => { if (user?.id) void refresh(); }, [user?.id, refresh]);
+  useEffect(() => {
+    if (!user?.id) return;
+    let active = true;
+    storeApi<StoreOrder[]>('orders').then(data => { if (active) setOrders(data); })
+      .catch(e => { if (active) { if (e instanceof StoreError && e.status === 401) setUser(null); else setError('We could not load your orders. Please try again.'); } })
+      .finally(() => { if (active) setLoadingOrders(false); });
+    return () => { active = false; };
+  }, [user?.id]);
   useEffect(() => {
     if (!user) return;
     const update = () => { if (!document.hidden) void refresh(); };

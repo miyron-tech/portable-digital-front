@@ -4,7 +4,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/Container';
-import { Footer } from '@/components/Footer';
 import { Brand } from '@/components/Brand';
 
 export default function AdminPage() {
@@ -53,15 +52,15 @@ export default function AdminPage() {
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              {[
+              {([
                 ['overview', '01 / Telemetry'],
                 ['services', '02 / Services'],
                 ['pipeline', '03 / Pipeline'],
                 ['media', '04 / Video Reel'],
-              ].map(([key, label]) => (
+              ] as const).map(([key, label]) => (
                 <button
                   key={key}
-                  onClick={() => setActiveTab(key as any)}
+                  onClick={() => setActiveTab(key)}
                   style={{
                     padding: '8px 16px',
                     borderRadius: '6px',
@@ -199,7 +198,6 @@ export default function AdminPage() {
         </Container>
       </main>
 
-      <Footer />
     </div>
   );
 }

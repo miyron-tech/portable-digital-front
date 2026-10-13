@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Container } from '@/components/Container';
-import { COMPANY_NAME, LEGAL_VERSION, legalDocuments } from '@/lib/legal';
+import { COMPANY_NAME, COMPANY_NUMBER, COMPANY_ADDRESS, COMPANY_JURISDICTION, LEGAL_VERSION, legalDocuments } from '@/lib/legal';
 
 export function generateStaticParams() {
   return legalDocuments.map(({ slug }) => ({ slug }));
@@ -25,8 +25,8 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
         <p className="text-xs uppercase tracking-[0.2em] text-muted">{COMPANY_NAME} · Legal</p>
         <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">{document.title}</h1>
         <p className="mt-5 text-lg text-muted">{document.description}</p>
-        <p className="mt-4 text-sm text-muted">Draft version · {LEGAL_VERSION}</p>
-        <p className="mt-6 rounded-xl border border-line bg-surface p-5 text-sm leading-6 text-muted" role="note">Draft for review. Company address, direct contact details and operational arrangements are being verified. These documents are not yet final terms for live paid services. Your mandatory legal rights are unaffected.</p>
+        <p className="mt-4 text-sm leading-6 text-muted">{COMPANY_NAME} · Company No. {COMPANY_NUMBER}<br />Registered in {COMPANY_JURISDICTION}<br />Registered office: {COMPANY_ADDRESS}</p>
+        <p className="mt-4 text-sm text-muted">Last updated · {LEGAL_VERSION}</p>
       </div>
       <div className="grid items-start gap-10 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-16">
         <aside className="rounded-xl border border-line p-5 lg:sticky lg:top-24">

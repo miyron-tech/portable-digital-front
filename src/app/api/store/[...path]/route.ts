@@ -16,7 +16,7 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   const { path } = await context.params;
   const route = path.join('/');
   const method = request.method;
-  const allowed = /^(auth\/(login|register|logout|me)|services(\/admin\/all|\/[a-z0-9-]+)?|estimate(\/items(\/[a-f0-9]+)?|\/price|\/refresh)?|orders(\/all|\/[a-zA-Z0-9-]+(\/status)?)?|payments\/(initiate|status\/\d{6}))$/;
+  const allowed = /^(auth\/(login|register|logout|me|password)|services(\/admin\/all|\/[a-z0-9-]+)?|estimate(\/items(\/[a-f0-9]+)?|\/price|\/refresh)?|orders(\/all|\/[a-zA-Z0-9-]+(\/status|\/messages(\/[a-f0-9]{24}\/files\/\d+)?)?)?|payments\/(initiate|status\/\d{6}))$/;
   if (!allowed.test(route)) return Response.json({ message: 'Not found' }, { status: 404 });
   if (method !== 'GET' && request.headers.get('origin') !== publicOrigin(request)) {
     return Response.json({ message: 'Invalid origin' }, { status: 403 });
@@ -29,12 +29,28 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
     return Response.json({ success: true });
   }
   try {
+    const contentType = request.headers.get('content-type') ?? 'application/json';
+    if (Number(request.headers.get('content-length') ?? 0) > 21 * 1024 * 1024) {
+      return Response.json({ message: 'Attachments are too large. Use up to 20 MB in total.' }, { status: 413 });
+    }
     const upstream = await fetch(`${API_URL}/${route}${new URL(request.url).search}`, {
       method, cache: 'no-store', signal: AbortSignal.timeout(15000),
-      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-      ...(method !== 'GET' ? { body: await request.text() } : {}),
+      headers: { 'Content-Type': contentType, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      ...(method !== 'GET' ? { body: await request.arrayBuffer() } : {}),
     });
+    if (upstream.status >= 500) {
+      return Response.json({ message: 'This service is temporarily unavailable. Please try again later.' }, { status: upstream.status, headers: { 'Cache-Control': 'no-store' } });
+    }
+    if (upstream.ok && /\/messages\/[a-f0-9]{24}\/files\/\d+$/.test(route)) {
+      return new Response(upstream.body, { status: upstream.status, headers: {
+        'Content-Type': upstream.headers.get('content-type') ?? 'application/octet-stream',
+        'Content-Disposition': upstream.headers.get('content-disposition') ?? 'attachment',
+        'Cache-Control': 'private, no-store',
+        'X-Content-Type-Options': 'nosniff',
+      } });
+    }
     const data = await upstream.json();
+    if (upstream.ok && route === 'auth/password') jar.delete('store_session');
     if (upstream.ok && (route === 'auth/login' || route === 'auth/register')) {
       jar.set('store_session', data.accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: data.expiresIn });
       return Response.json({ user: data.user });

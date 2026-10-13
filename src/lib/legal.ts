@@ -1,6 +1,8 @@
 export const COMPANY_NAME = 'PORTABLE DIGITAL LIMITED';
 export const COMPANY_NUMBER = '16974578';
-export const LEGAL_VERSION = '12 October 2026';
+export const COMPANY_ADDRESS = 'Flat 34 Quested Court, Brett Road, London, England, E8 1JS';
+export const COMPANY_JURISDICTION = 'England and Wales';
+export const LEGAL_VERSION = '13 October 2026';
 
 export type LegalDocument = { slug: string; title: string; description: string; sections: { title: string; paragraphs: string[] }[] };
 
@@ -10,7 +12,7 @@ export const legalDocuments: LegalDocument[] = [
     description: 'The terms for using our website and commissioning our digital services.',
     sections: [
       { title: 'Who we are and who these terms cover', paragraphs: [
-        'Portable digital is operated by PORTABLE DIGITAL LIMITED, company number 16974578 (“we”, “us”, “our”). Our Company details page identifies the information still awaiting verification and our available contact channel.',
+        'Portable digital is operated by PORTABLE DIGITAL LIMITED, company number 16974578 (“we”, “us”, “our”). Our registered office is Flat 34 Quested Court, Brett Road, London, England, E8 1JS. We are registered in England and Wales. You can reach us through our contact page or write to our registered office.',
         'These terms cover our website and services supplied to individuals and businesses. A consumer is an individual acting wholly or mainly outside their trade, business, craft or profession. Mandatory consumer protections take priority over any conflicting provision. Business customers must have authority to act for the organisation placing the order. Our contracting services are intended for customers aged 18 or over.'
       ] },
       { title: 'Enquiries, estimates and the contract', paragraphs: [
@@ -33,7 +35,7 @@ export const legalDocuments: LegalDocument[] = [
         'We will treat non-public project information as confidential, share it only with people who need it for delivery and are subject to appropriate duties, and disclose it where legally required. We will not use your name, logo or confidential project work for publicity without permission.'
       ] },
       { title: 'Cancellation, problems and refunds', paragraphs: [
-        'Our Refund & Cancellation policy explains cooling-off rights, early performance and remedies for defective services. It forms part of the proposed service terms. Starting a bespoke service does not automatically remove consumer cancellation rights.',
+        'Our Refund & Cancellation policy explains cooling-off rights, early performance and remedies for defective services. It forms part of the service terms. Starting a bespoke service does not automatically remove consumer cancellation rights.',
         'Tell us about a problem through the contact page or the correspondence channel for your engagement. Describe the issue and the outcome you seek. We will investigate and give a reasoned response. You do not have to complete our complaints process before exercising a statutory right.'
       ] },
       { title: 'Responsibility and suspension', paragraphs: [
@@ -42,7 +44,7 @@ export const legalDocuments: LegalDocument[] = [
         'We may restrict access where reasonably necessary to address unlawful use, a material breach or an immediate security threat. Where practicable, we will explain the reason and allow a reasonable opportunity to remedy the issue. Suspension does not automatically forfeit prepaid sums or remove rights relating to work already supplied.'
       ] },
       { title: 'Law, disputes and changes', paragraphs: [
-        'The proposed governing law is the law of England and Wales. Consumers retain the mandatory protections and access to courts available under the law of their habitual residence. These terms do not require consumers to bring proceedings exclusively in England or waive collective or other mandatory remedies.',
+        'The governing law is the law of England and Wales. Consumers retain the mandatory protections and access to courts available under the law of their habitual residence. These terms do not require consumers to bring proceedings exclusively in England or waive collective or other mandatory remedies.',
         'Changes apply prospectively. The version supplied when a service contract is accepted continues to govern that engagement unless a lawful change is expressly agreed. If one provision is unenforceable, the remaining provisions continue so far as the law permits. Neither failure to enforce a right nor delay in doing so is a waiver.'
       ] },
     ],
@@ -69,7 +71,7 @@ export const legalDocuments: LegalDocument[] = [
       ] },
       { title: 'How to cancel', paragraphs: [
         'Use the contact page or the contact channel stated in your accepted proposal. State that you are cancelling and identify the engagement. An order number helps but is not mandatory if we can otherwise identify the contract. Keep a copy of your message. We will acknowledge cancellation electronically when submitted online.',
-        'You may use this optional model notice: “To PORTABLE DIGITAL LIMITED [insert the confirmed postal or email address supplied with your contract]: I/We hereby give notice that I/We cancel my/our contract for the supply of the following service: ____. Ordered on: ____. Name of consumer(s): ____. Address of consumer(s): ____. Signature of consumer(s), only if notified on paper: ____. Date: ____.” Delete as appropriate. You do not have to use this form or give a reason.'
+        'You may use this optional model notice: “To PORTABLE DIGITAL LIMITED at Flat 34 Quested Court, Brett Road, London, England, E8 1JS: I/We hereby give notice that I/We cancel my/our contract for the supply of the following service: ____. Ordered on: ____. Name of consumer(s): ____. Address of consumer(s): ____. Signature of consumer(s), only if notified on paper: ____. Date: ____.” Delete as appropriate. You do not have to use this form or give a reason.'
       ] },
       { title: 'When and how we refund', paragraphs: [
         'For a valid statutory cancellation of a service, we reimburse sums due without undue delay and no later than 14 days after being informed of cancellation. Any permitted deduction for an expressly requested early start will be explained. We use the original payment method unless you expressly agree otherwise and will not charge a refund fee. Bank posting times do not extend our duty to make the reimbursement on time.'
@@ -89,7 +91,7 @@ export const legalDocuments: LegalDocument[] = [
     description: 'How personal information is used for enquiries, accounts, orders and service delivery.',
     sections: [
       { title: 'Controller and scope', paragraphs: [
-        'PORTABLE DIGITAL LIMITED, company number 16974578, is the controller for personal information used to operate this website and manage its customer relationships. Use our contact page for privacy enquiries. Our verified postal address and direct privacy email must be added before this draft is finalised.',
+        'PORTABLE DIGITAL LIMITED, company number 16974578, is the controller for personal information used to operate this website and manage its customer relationships. Use our contact page for privacy enquiries. You can also write to our registered office: Flat 34 Quested Court, Brett Road, London, England, E8 1JS.',
         'This notice covers visitors, enquirers, account holders, customers and business contacts. Where we process personal data solely on a client’s instructions within a project, the client normally acts as controller and a separate data processing agreement must define our processor obligations.'
       ] },
       { title: 'Information we collect and its sources', paragraphs: [
@@ -104,17 +106,17 @@ export const legalDocuments: LegalDocument[] = [
       ] },
       { title: 'Recipients and payment processing', paragraphs: [
         'Access is limited to personnel and service providers who need information for the relevant task. Relevant categories include hosting and database providers, file storage and communications providers, delivery contractors, professional advisers and authorities where disclosure is legally required. Providers acting as processors must operate under appropriate contractual instructions.',
-        'Card payments are processed by our payment provider, WemoPay, on its own hosted payment page. To create a payment we send your name, email, billing address, the order amount, currency, a short description of the order and an order reference. We never receive or store your card number; card details entered on the provider’s page are handled under that provider’s own notice. The provider’s legal identity and privacy notice must be confirmed before live payment activation.',
+        'Card payments are processed by our payment provider, WemoPay, on its own hosted payment page. To create a payment we send your name, email, billing address, the order amount, currency, a short description of the order and an order reference. We never receive or store your card number; card details entered on the provider’s page are handled under that provider’s own notice. Review the provider’s privacy notice on its hosted payment page before submitting card details.',
         'We do not use the current storefront to sell personal information or operate advertising profiles. A corporate reorganisation may require limited disclosure under appropriate confidentiality and data-protection safeguards.'
       ] },
       { title: 'Storage, international access and security', paragraphs: [
-        'The deployment locations, supplier list and countries from which suppliers or staff can access data are still being verified for the live service. This draft does not represent that all processing is confined to the UK.',
-        'Before any restricted international transfer, we must establish a lawful transfer mechanism, such as applicable adequacy regulations or appropriate contractual safeguards, and complete required assessments. The final notice must identify relevant destinations and explain how to obtain information about safeguards. Contact us to request those details.',
+        'Processing is not necessarily confined to the UK. Contact us for information about the locations relevant to your personal data and access by our service providers.',
+        'Before any restricted international transfer, we must establish a lawful transfer mechanism, such as applicable adequacy regulations or appropriate contractual safeguards, and complete required assessments. Contact us for information about relevant destinations and applicable safeguards.',
         'We use access controls and authentication safeguards appropriate to the service. No internet transmission or storage system can be guaranteed completely secure. Any incident will be assessed and notified to affected people and regulators where required.'
       ] },
       { title: 'Retention', paragraphs: [
         'Retention is determined by the purpose and applicable legal requirements. Enquiries are retained while handling the request and any justified follow-up; account information while the account is needed; project and transaction records while needed for delivery, accounting duties and applicable claims periods. Security records are retained only for a proportionate investigation and protection period.',
-        'We must confirm the operational retention schedule and backup deletion process before this notice is finalised. This text does not promise an automated deletion facility that has not been implemented. On a valid erasure request we assess what can be deleted and explain any record we must retain, its basis and relevant retention criteria.'
+        'On a valid erasure request we assess what can be deleted and explain any record we must retain, its basis and relevant retention criteria.'
       ] },
       { title: 'Your rights and complaints', paragraphs: [
         'Subject to the relevant legal conditions, you may request access, correction, erasure, restriction or portability of your personal data, object to processing based on legitimate interests, and withdraw consent at any time without affecting earlier lawful processing. You have an unconditional right to object to direct marketing.',
@@ -141,7 +143,7 @@ export const legalDocuments: LegalDocument[] = [
       { title: 'Optional technologies and third parties', paragraphs: [
         'The current storefront code does not install optional analytics or advertising cookies or use local storage for tracking. There is therefore no optional-cookie preference to accept in this version.',
         'Before introducing optional technologies that require consent, we will explain their providers, purposes and duration and offer a genuine choice before they run, including an equally accessible refusal and a way to withdraw consent. Continuing to browse is not consent.',
-        'A separately visited payment provider may use technologies on its own hosted payment page. Review its cookie information when using that page. Hosting or security providers must also be checked before live deployment; additional technologies must be reflected here.'
+        'A separately visited payment provider may use technologies on its own hosted payment page. Review its cookie information when using that page. We will update this policy when the technologies used by the website change.'
       ] },
       { title: 'Your controls', paragraphs: [
         'You can inspect, delete or block cookies through your browser’s privacy settings. Blocking the authentication cookie prevents sign-in and account features from working correctly; public catalogue pages do not require you to sign in. Clearing cookies does not delete your account or server-side order records. Contact us through the contact page for questions, and see our Privacy Policy for personal-data rights.'
@@ -181,18 +183,18 @@ export const legalDocuments: LegalDocument[] = [
       { title: 'Legal identity', paragraphs: [
         'Legal name: PORTABLE DIGITAL LIMITED.',
         'Company number: 16974578. Trading name: Portable digital.',
-        'Registered office and jurisdiction of registration: awaiting verification against the official Companies House record. No unverified address is presented here as the company’s registered office.'
+        `Registered office: ${COMPANY_ADDRESS}. Registered in ${COMPANY_JURISDICTION}.`
       ] },
       { title: 'Contact', paragraphs: [
-        'Website enquiries, cancellation requests, complaints and privacy requests can be submitted through the contact page. A direct monitored email address and confirmed postal address are still to be supplied for the final documents and paid-contract information.',
-        'VAT registration status and any applicable VAT number are awaiting confirmation. A Companies House number is not a VAT number; no VAT registration is claimed here.'
+        'Website enquiries, cancellation requests, complaints and privacy requests can be submitted through the contact page. You can also send correspondence to our registered office: Flat 34 Quested Court, Brett Road, London, England, E8 1JS.',
+        'Any applicable VAT is identified in your agreed price and invoice. Our company registration number is not a VAT number.'
       ] },
       { title: 'Service and payment information', paragraphs: [
         'Portable digital offers digital engineering, development, infrastructure and support services to businesses and individual consumers. Scope, delivery, price and any ongoing commitment must be agreed for each paid engagement.',
         'Orders from the catalogue can be paid by card on the secure hosted page of our payment provider, WemoPay, once card payments are enabled. We do not see or store card numbers. Every paid engagement requires clear payment instructions and the required pre-contract information.'
       ] },
-      { title: 'Verification status', paragraphs: [
-        'These legal pages are drafts pending verification of company contact details, commercial procedures, suppliers, data locations and retention arrangements. They must not be treated as a completed compliance statement or as confirmation that a paid service has been accepted. Consult the official register using the link below for company filings.'
+      { title: 'Official register', paragraphs: [
+        'Company filings are available from Companies House using the official register link below. Your mandatory legal rights are unaffected by these policies.'
       ] },
     ],
   },

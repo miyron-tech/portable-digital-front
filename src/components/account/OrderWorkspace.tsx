@@ -44,7 +44,8 @@ function Conversation({ order, onRead }: { order: StoreOrder; onRead: () => void
   const [busy, setBusy] = useState(false);
   const [reload, setReload] = useState(0);
   const input = useRef<HTMLInputElement>(null);
-  const read = useRef(onRead); read.current = onRead;
+  const read = useRef(onRead);
+  useEffect(() => { read.current = onRead; }, [onRead]);
   useEffect(() => {
     let active = true;
     const load = async () => {

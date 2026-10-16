@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Brand } from '@/components/Brand';
+import { SelectionLink } from '@/components/SelectionLink';
 
 /**
  * Фоновые ролики по кругу: сначала оригинальный, затем роботы. Каждый крутится
@@ -119,6 +120,7 @@ export function Vantage() {
                   {item.label}
                 </Link>
               ))}
+              <SelectionLink onNavigate={() => closeMenu()} />
             </nav>
             <div className="time-panel">
               <span className="time-label">Timezone</span>

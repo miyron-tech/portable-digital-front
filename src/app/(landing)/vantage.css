@@ -23,7 +23,7 @@
 html:has(.viewport),
 html:has(.viewport) body {
   overflow-x: clip;
-  background: #000;
+  background: var(--bg);
   color-scheme: dark;
 }
 
@@ -35,6 +35,7 @@ html:has(.viewport) body {
   overflow: hidden;
   background: #000;
   color: #fff;
+  font-size: 16px;
   font-family: "Reference Sans", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -151,6 +152,17 @@ html:has(.viewport) body {
   align-items: flex-start;
   height: 48px;
   white-space: nowrap;
+}
+
+
+/* Full-width charcoal bar; navigation keeps its existing alignment. */
+.viewport .header::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--header-top)) calc(-1 * var(--gutter-end)) -16px calc(-1 * var(--gutter-start));
+  z-index: -1;
+  background: #151719;
+  pointer-events: none;
 }
 
 .viewport .brand {

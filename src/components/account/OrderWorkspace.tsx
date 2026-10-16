@@ -35,7 +35,7 @@ export function OrderWorkspace({ order, user, initialTab, onBack, onRefresh, onR
   </section>;
 }
 
-function Conversation({ order, onRead }: { order: StoreOrder; onRead: () => void }) {
+export function Conversation({ order, onRead, admin = false, onDraftChange }: { order: StoreOrder; onRead: () => void; admin?: boolean; onDraftChange?: (dirty: boolean, busy: boolean) => void }) {
   const [messages, setMessages] = useState<StoreMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -44,6 +44,7 @@ function Conversation({ order, onRead }: { order: StoreOrder; onRead: () => void
   const [busy, setBusy] = useState(false);
   const [reload, setReload] = useState(0);
   const input = useRef<HTMLInputElement>(null);
+  useEffect(() => { onDraftChange?.(!!body.trim() || files.length > 0, busy); }, [body, files, busy, onDraftChange]);
   const read = useRef(onRead);
   useEffect(() => { read.current = onRead; }, [onRead]);
   useEffect(() => {
@@ -57,8 +58,8 @@ function Conversation({ order, onRead }: { order: StoreOrder; onRead: () => void
     void load(); const timer = setInterval(load, 15000);
     return () => { active = false; clearInterval(timer); };
   }, [order.orderNumber, reload]);
-  return <div className="account-chat"><div className="account-chat-intro"><h3>Your project conversation</h3><p>Talk directly with the Portable team. Messages and files stay together with this order.</p></div><div className="account-chat-feed" aria-label="Project messages" aria-busy={loading}>
-    {loading ? <p role="status">Loading conversation…</p> : !messages.length ? <div className="account-empty"><h3>Start the conversation.</h3><p>Tell us a little more about your project or share your first references.</p></div> : messages.map(m => <article key={m.id} className={`account-message account-message-${m.authorRole}`}><header><span>{m.authorRole === 'admin' ? 'PORTABLE TEAM' : 'YOU'} <strong>{m.authorName}</strong></span><time dateTime={m.createdAt}>{dateLabel(m.createdAt, true)}</time></header>{m.body && <p>{m.body}</p>}{m.attachments.map(f => <a className="account-attachment" key={f.index} href={`/api/store/orders/${order.orderNumber}/messages/${m.id}/files/${f.index}`} download><span aria-hidden="true">↓</span><span>{f.originalName}<small>{Math.max(1, Math.round(f.size / 1024))} KB</small></span></a>)}{m.authorRole === 'customer' && <small className="account-read-status">{m.readByAdminAt ? 'Read by the team' : 'Sent'}</small>}</article>)}
+  return <div className="account-chat"><div className="account-chat-intro"><h3>{admin ? 'Client conversation' : 'Your project conversation'}</h3><p>{admin ? 'Reply as the Portable team. Messages and attachments are visible to the customer.' : 'Talk directly with the Portable team. Messages and files stay together with this order.'}</p></div><div className="account-chat-feed" aria-label="Project messages" aria-busy={loading}>
+    {loading ? <p role="status">Loading conversation…</p> : !messages.length ? <div className="account-empty"><h3>Start the conversation.</h3><p>{admin ? 'Send the customer an update or request project details.' : 'Tell us a little more about your project or share your first references.'}</p></div> : messages.map(m => <article key={m.id} className={`account-message account-message-${m.authorRole}`}><header><span>{m.authorRole === 'admin' ? 'PORTABLE TEAM' : admin ? 'CUSTOMER' : 'YOU'} <strong>{m.authorName}</strong></span><time dateTime={m.createdAt}>{dateLabel(m.createdAt, true)}</time></header>{m.body && <p>{m.body}</p>}{m.attachments.map(f => <a className="account-attachment" key={f.index} href={`/api/store/orders/${order.orderNumber}/messages/${m.id}/files/${f.index}`} download><span aria-hidden="true">↓</span><span>{f.originalName}<small>{Math.max(1, Math.round(f.size / 1024))} KB</small></span></a>)}{m.authorRole === 'customer' && <small className="account-read-status">{m.readByAdminAt ? 'Read by the team' : 'Sent'}</small>}</article>)}
     </div>{error && <div className="store-error" role="alert">{error} <button className="store-link" onClick={() => setReload(r => r + 1)}>Try again</button></div>}
     <form className="account-compose store-form" onSubmit={async e => {
       e.preventDefault(); if (!body.trim() && !files.length || busy) return; setBusy(true); setError('');

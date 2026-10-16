@@ -37,7 +37,7 @@
 .account-filters > div { display:flex; flex-wrap:wrap; gap:6px 22px; }
 .account-filters button { font-size:11px; color:#7e9098; padding:8px 0; }
 .account-filters button[aria-pressed=true] { color:#ecf0f2; text-decoration:underline; text-underline-offset:7px; }
-.account-filters select { font-size:11px; background:#080b0d; color:#a9b8bf; padding:8px 0; }
+.account-filters select { font-size:11px; background:var(--bg); color:#a9b8bf; padding:8px 0; }
 .account-table-head,.account-order { display:grid; grid-template-columns:minmax(0,1fr) 145px 90px 120px; align-items:center; gap:24px; }
 .account-table-head { color:#677c85; font-size:9px; letter-spacing:.12em; padding:0 0 14px; border-bottom:1px solid var(--account-line); }
 .account-order { padding:25px 0; border-bottom:1px solid var(--account-line); }
@@ -79,7 +79,7 @@
 .account-form-title:not(:first-child) { margin-top:20px; padding-top:30px; border-top:1px solid var(--account-line); }
 .account-form-title > span { font-size:10px; color:#647d88; }
 .account-form-title h3 { font-size:16px; font-weight:400; letter-spacing:-.02em; }
-.account .store-form input,.account .store-form select,.account .store-form textarea { border-radius:3px; background:#0b1013; border-color:#ffffff20; font-size:13px; }
+.account .store-form input,.account .store-form select,.account .store-form textarea { border-radius:3px; background:#151d22; border-color:#ffffff20; font-size:13px; }
 .account .store-form input:disabled { opacity:.6; cursor:not-allowed; }
 .account .store-form label { font-size:11px; color:#a7b6be; }
 .account .store-form small,.account-form-help { font-size:10px; color:#7c919b; line-height:1.8; }

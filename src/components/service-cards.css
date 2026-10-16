@@ -7,7 +7,7 @@
 .practice-card:nth-child(3n+3) { transition-delay: .16s; }
 .practice-card:focus-visible { outline: 1px solid #e48a52; outline-offset: 8px; }
 .practice-card:focus-within { opacity: 1; transform: none; }
-.practice-caption { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: ui-monospace, monospace; font-size: 9px; letter-spacing: .09em; text-transform: uppercase; color: #71777b; }
+.practice-caption { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: ui-monospace, monospace; font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: #71777b; }
 .practice-caption span:first-child { color: #b37651; }
 .practice-art { position: relative; display: grid; place-items: center; height: clamp(235px, 25vw, 310px); margin: 12px -12px 23px; }
 .practice-art::before { content: ''; position: absolute; width: 62%; height: 62%; background: radial-gradient(ellipse, #f17f260b, transparent 70%); opacity: .3; transition: opacity .5s; }
@@ -30,11 +30,11 @@
 .practice-card:hover .practice-art::before { opacity: 1; }
 .iso-signal { stroke-dasharray: 360; stroke-dashoffset: 0; transition: stroke-dashoffset 1s; }
 .practice-card.reveal-waiting .iso-signal { stroke-dashoffset: 360; }
-.practice-copy h3 { margin: 0 0 12px; color: #e0e2e3; font-size: 17px; font-weight: 500; line-height: 1.4; letter-spacing: -.035em; }
-.practice-copy p { margin: 0; color: #929a9f; font-size: 13px; line-height: 1.85; }
-.practice-meta { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-top: auto; padding-top: 24px; color: #747e83; font-size: 10px; line-height: 1.6; }
+.practice-copy h3 { margin: 0 0 12px; color: #e0e2e3; font-size: 19px; font-weight: 500; line-height: 1.4; letter-spacing: -.035em; }
+.practice-copy p { margin: 0; color: #929a9f; font-size: 15px; line-height: 1.85; }
+.practice-meta { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-top: auto; padding-top: 24px; color: #747e83; font-size: 12px; line-height: 1.6; }
 .practice-meta span:first-child { color: #b7bec2; }
-.practice-link { align-self: flex-start; margin-top: 17px; padding-bottom: 5px; color: #bdc3c6; font-size: 11px; border-bottom: 1px solid #ffffff24; transition: color .25s, border-color .25s; }
+.practice-link { align-self: flex-start; margin-top: 17px; padding-bottom: 5px; color: #bdc3c6; font-size: 13px; border-bottom: 1px solid #ffffff24; transition: color .25s, border-color .25s; }
 .practice-card:hover .practice-link, .practice-card:focus-visible .practice-link { color: #ee9a60; border-color: #e48a52; }
 .practice-skeleton { padding: 30px; min-height: 430px; border-left: 1px solid #ffffff12; }
 .practice-skeleton > div { background: #ffffff06; height: 12px; margin-bottom: 15px; width: 85%; }
@@ -50,10 +50,10 @@
   .practice-card, .practice-card:nth-child(n) { padding: 24px 0 28px; border-left: 0; border-top: 1px solid #ffffff12; }
   .practice-art { height: 270px; margin: 6px 0 16px; }
   .service-illustration { max-width: 320px; }
-  .practice-copy h3 { font-size: 20px; }
-  .practice-copy p { font-size: 14px; }
+  .practice-copy h3 { font-size: 22px; }
+  .practice-copy p { font-size: 16px; }
   .practice-meta { padding-top: 20px; }
-  .practice-link { padding: 8px 0; margin-top: 12px; font-size: 12px; }
+  .practice-link { padding: 8px 0; margin-top: 12px; font-size: 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .practice-card, .iso-floating, .iso-module, .iso-signal, .practice-link, .practice-art::before { transition: none !important; }

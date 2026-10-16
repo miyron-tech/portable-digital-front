@@ -5,6 +5,9 @@ export async function storeApi<T>(path: string, method = 'GET', body?: unknown):
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new StoreError(response.status >= 500 ? 'This service is temporarily unavailable. Please try again later.' : response.status === 401 ? 'Please sign in. Your session may have expired.' : Array.isArray(data.message) ? data.message.join('. ') : data.message || 'We could not complete your request.', response.status, data.code, data.missing);
+  if (typeof window !== 'undefined' && method === 'POST' && /^auth\/(login|register|logout)$/.test(path)) {
+    window.dispatchEvent(new Event('portable-auth-changed'));
+  }
   return data as T;
 }
 /** Ошибка API с кодом ответа: оплате нужно отличать «не хватает данных плательщика» от прочих отказов. */

@@ -23,6 +23,7 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   }
   const jar = await cookies();
   const token = jar.get('store_session')?.value;
+  let guestToken = jar.get('store_selection')?.value;
   if (route === 'auth/logout') {
     if (token) {
       try {
@@ -36,13 +37,28 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
     return Response.json({ success: true });
   }
   try {
+    // Keep guest selections in an HttpOnly cookie. The API remains authoritative
+    // for contents and prices; no payer or card data is stored in browser storage.
+    const selectionRequest = route === 'estimate' || route.startsWith('estimate/') && route !== 'estimate/price';
+    if (token && guestToken && (selectionRequest || route === 'orders' && method === 'POST')) {
+      const merged = await fetch(`${API_URL}/estimate/merge`, {
+        method: 'POST', cache: 'no-store', signal: AbortSignal.timeout(15000),
+        headers: { Authorization: `Bearer ${token}`, 'X-Estimate-Token': guestToken },
+      });
+      if (!merged.ok) {
+        // Keep the cookie so a failed merge can be retried without losing services.
+        return Response.json({ message: 'Your saved selection could not be restored yet. Please retry.', code: 'SELECTION_SYNC_FAILED' }, { status: merged.status === 401 ? 401 : 409 });
+      }
+      jar.delete('store_selection');
+      guestToken = undefined;
+    }
     const contentType = request.headers.get('content-type') ?? 'application/json';
     if (Number(request.headers.get('content-length') ?? 0) > 21 * 1024 * 1024) {
       return Response.json({ message: 'Attachments are too large. Use up to 20 MB in total.' }, { status: 413 });
     }
     const upstream = await fetch(`${API_URL}/${route}${new URL(request.url).search}`, {
       method, cache: 'no-store', signal: AbortSignal.timeout(15000),
-      headers: { 'Content-Type': contentType, ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+      headers: { 'Content-Type': contentType, ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(selectionRequest && guestToken ? { 'X-Estimate-Token': guestToken } : {}) },
       ...(method !== 'GET' ? { body: await request.arrayBuffer() } : {}),
     });
     if (upstream.status >= 500) {
@@ -57,6 +73,10 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
       } });
     }
     const data = await upstream.json();
+    if (upstream.ok && selectionRequest && data.token) {
+      jar.set('store_selection', data.token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 30 * 24 * 60 * 60 });
+      delete data.token;
+    }
     if (upstream.ok && route === 'auth/password') jar.delete('store_session');
     if (upstream.ok && (route === 'auth/login' || route === 'auth/register')) {
       jar.set('store_session', data.accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: data.expiresIn });

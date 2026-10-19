@@ -1,12 +1,15 @@
 'use client';
 import Link from 'next/link';
+import { OrderEditor } from './OrderEditor';
 import { useEffect, useRef, useState } from 'react';
 import { PayButton } from '../PayButton';
 import { storeApi, StoreError, termsLine, type StoreMessage, type StoreOrder, type StorePayment, type StoreUser } from '@/lib/store-client';
 import { formatMoney } from '@/lib/format';
 import { dateLabel, OrderStatus, paymentLabel } from './shared';
 
-export function OrderWorkspace({ order, user, initialTab, onBack, onRefresh, onRead }: { order: StoreOrder; user: StoreUser; initialTab: 'details' | 'messages'; onBack: () => void; onRefresh: () => Promise<void>; onRead: () => void }) {
+export function OrderWorkspace({ order, user, initialTab, onBack, onRefresh, onRead, onUpdated }: { order: StoreOrder; user: StoreUser; initialTab: 'details' | 'messages'; onBack: () => void; onRefresh: () => Promise<void>; onRead: () => void; onUpdated: (order: StoreOrder) => void }) {
+  const [editing, setEditing] = useState(false);
+  const [notice, setNotice] = useState('');
   const [tab, setTab] = useState(initialTab);
   const [payment, setPayment] = useState<StorePayment | null>(null);
   const [error, setError] = useState('');
@@ -23,14 +26,20 @@ export function OrderWorkspace({ order, user, initialTab, onBack, onRefresh, onR
   }
   return <section className="account-project"><button className="account-back" onClick={onBack}>← Back to {initialTab === 'messages' ? 'messages' : 'orders'}</button><div className="account-project-heading"><div><p className="account-kicker">ORDER /{order.orderNumber} · {dateLabel(order.createdAt)}</p><h2>{order.items[0]?.title ?? 'Your project'}</h2></div><OrderStatus status={order.status} /></div>
     <div className="account-project-tabs" role="group" aria-label="Order sections"><button aria-pressed={tab === 'details'} onClick={() => setTab('details')}>Project details</button><button aria-pressed={tab === 'messages'} onClick={() => setTab('messages')}>Conversation {order.unreadCount ? <span className="account-count">{order.unreadCount}</span> : null}</button><Link href={`/orders/${order.orderNumber}`}>Payment page ↗</Link></div>
+    {notice && <p className="store-notice" role="status">{notice}</p>}
+    {editing && <OrderEditor order={order} onClose={() => setEditing(false)} onSaved={updated => { onUpdated(updated); setPayment(null); setEditing(false); setNotice('Order updated. Your order number stays the same.'); }} />}
     {tab === 'messages' ? <Conversation order={order} onRead={onRead} /> : <>
       {order.status !== 'cancelled' && <ol className="account-progress" aria-label="Project progress">{['Awaiting payment', 'Confirmed', 'In progress', 'In review', 'Completed'].map((label, i) => <li key={label} className={i <= step ? 'reached' : ''} aria-current={i === step ? 'step' : undefined}><span>{i < step ? '✓' : String(i + 1).padStart(2, '0')}</span>{label}</li>)}</ol>}
+      <div className="account-project-note">
+        {order.status === 'awaiting_payment' && !paid ? <><button className="store-secondary" disabled={!order.canEdit} onClick={() => { setNotice(''); setEditing(true); }}>Edit order</button>{!order.canEdit && <p>Editing is unavailable while a payment is active or requires review. Complete or cancel the payment, then check its status below.</p>}</> : ['paid', 'in_progress', 'in_review'].includes(order.status) ? <button className="store-secondary" onClick={() => setTab('messages')}>Request changes ↗</button> : null}
+      </div>
       <div className="account-project-grid"><div><h3 className="account-detail-label">Scope of work</h3>{order.items.map((item, i) => <div className="account-scope" key={i}><div><strong>{item.title}</strong><small>{item.units} {item.model === 'hourly' || item.model === 'mixed' ? 'hours' : item.units === 1 ? 'unit' : 'units'} · {item.model === 'fixed' ? 'Fixed price' : item.model === 'hourly' ? 'Hourly' : item.model === 'retainer' ? 'Retainer' : 'Service'}{item.notes ? ` · ${item.notes}` : ''}</small></div>{item.pricing && <span>{formatMoney(item.pricing.total, order.currency)}</span>}</div>)}{order.note && <div className="account-project-note"><h3>Your project brief</h3><p>{order.note}</p></div>}<div className="account-project-note"><h3>Keep everything in the loop.</h3><p>Questions, references, feedback — share them with the team in your project conversation.</p><button className="account-text-button" onClick={() => setTab('messages')}>Open conversation ↗</button></div></div>
         <aside className="account-payment"><p className="account-kicker">ORDER SUMMARY</p><div className="account-summary-row"><span>Services</span><span>{formatMoney(order.subtotal ?? order.total, order.currency)}</span></div>{!!order.discountAmount && <div className="account-summary-row"><span>Discount</span><span>−{formatMoney(order.discountAmount, order.currency)}</span></div>}<div className="account-payment-total"><span>Total</span><strong>{formatMoney(order.total, order.currency)}</strong></div><p className="account-payment-state">{paymentState ? paymentLabel(paymentState) : paid ? 'Payment received' : 'Awaiting payment'}</p>{(payment?.paidAt || order.payment?.paidAt) && <p className="account-form-help">Paid {dateLabel(payment?.paidAt ?? order.payment?.paidAt)}</p>}
           {order.status === 'awaiting_payment' && !paid && <PayButton order={order} user={user} />}
           {order.status !== 'cancelled' && <button className="account-text-button" onClick={sync} disabled={syncing}>{syncing ? 'Checking…' : 'Check payment status ↻'}</button>}{error && <p className="store-error" role="alert">{error}</p>}{termsLine(order) && <p className="account-terms">{termsLine(order)}</p>}<Link href="/legal/refund-cancellation" className="account-text-button">Refund & cancellation policy ↗</Link>
         </aside>
       </div>
+      {!!order.changes?.length && <details className="account-project-note"><summary>Order change history</summary>{[...order.changes].reverse().map(change => <p key={change.revision}>Revision {change.revision} · {dateLabel(change.at, true)} · Updated by {change.actorId === user.id ? 'you' : 'the team'} · {formatMoney(change.previousTotal, order.currency)} → {formatMoney(change.total, order.currency)}</p>)}</details>}
     </>}
   </section>;
 }

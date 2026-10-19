@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { PayButton } from './PayButton';
+import { OrderEditor } from './account/OrderEditor';
 import { StoreAuth } from './StoreAuth';
 import { storeApi, StoreError, termsLine, type StoreOrder, type StorePayment, type StoreUser } from '@/lib/store-client';
 import { formatMoney } from '@/lib/format';
@@ -24,6 +25,7 @@ export function PaymentResult({ orderNumber }: { orderNumber: string }) {
   const [view, setView] = useState<View>('loading');
   const [timedOut, setTimedOut] = useState(false);
   const [retry, setRetry] = useState(0);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => { storeApi<StoreUser>('auth/me').then(setUser).catch(() => null).finally(() => setReady(true)); }, []);
 
@@ -86,6 +88,7 @@ export function PaymentResult({ orderNumber }: { orderNumber: string }) {
 
   return (
     <div className="store-checkout">
+      {editing && <OrderEditor order={order} onClose={() => setEditing(false)} onSaved={updated => { setOrder(updated); setPayment(null); setEditing(false); setRetry(n => n + 1); }} />}
       <div>
         <span className="store-eyebrow">{eyebrow}</span>
         <h1>{title}</h1>
@@ -93,6 +96,7 @@ export function PaymentResult({ orderNumber }: { orderNumber: string }) {
           <div className="store-row"><h2>Order {order.orderNumber}</h2><strong className="store-total">{formatMoney(order.total, order.currency)}</strong></div>
           <p>{order.items.map(item => `${item.title} × ${item.units}`).join(', ')}</p>
           <p className="store-muted" role="status">{text}</p>
+          {order.canEdit && <button className="store-secondary" onClick={() => setEditing(true)}>Edit order</button>}
           {(view === 'failed' || view === 'unpaid') && <PayButton order={order} user={user} label={view === 'failed' ? `Try again · ${formatMoney(order.total, order.currency)} →` : undefined} />}
           {termsLine(order) && <p className="store-muted">{termsLine(order)}</p>}
           {payment?.paidAt && <p className="store-muted">Paid on {new Date(payment.paidAt).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}</p>}
